@@ -1,37 +1,36 @@
 package nodomain.yalg;
 
+import android.graphics.PointF;
+
 import java.lang.Math;
 /**
  * Created by user-mutti on 10.09.2015.
  */
 public class Vec2D {
-    static public float[] normalize(float[] vector2D){
-        float fInverseLen = 1.0f / (float)Math.hypot((double) vector2D[0], (double) vector2D[1]);
-
-        float[] output = new float[2];
-        output[0] = fInverseLen * vector2D[0];
-        output[1] = fInverseLen * vector2D[1];
-        return output;
-    }
-
     //A-B
-    static public float[] subtract(float[] vectorA, float[] vectorB){
-        float[] output = new float[2];
-        output[0] = vectorA[0] - vectorB[0];
-        output[1] = vectorA[1] - vectorB[1];
-        return output;
+    static public PointF subtract(PointF vectorA, PointF vectorB) {
+        return new PointF(vectorA.x - vectorB.x, vectorA.y - vectorB.y);
     }
 
-    //A.B
-    static public float dot(float[] vectorA, float[] vectorB){
-        return vectorA[0] * vectorB[0] + vectorA[1] * vectorB[1];
+    static public PointF add(PointF vectorA, PointF vectorB) {
+        return new PointF(vectorA.x + vectorB.x, vectorA.y + vectorB.y);
     }
 
-    //A-B
-    static public float[] perpendicular(float[] vector){
-        float[] output = new float[2];
-        output[0] = -vector[1];
-        output[1] =  vector[0];
-        return output;
+    static public PointF mul(float x, PointF vector) {
+        return new PointF(x * vector.x, x * vector.y);
+    }
+
+    static public float dot(PointF vectorA, PointF vectorB) {
+        return vectorA.x * vectorB.x + vectorA.y * vectorB.y;
+    }
+
+    static public PointF perpendicular(PointF vector) {
+        return new PointF(-vector.y, vector.x);
+    }
+
+    static public void normalize(PointF vector) {
+        float length = vector.length();
+        vector.x /= length;
+        vector.y /= length;
     }
 }
