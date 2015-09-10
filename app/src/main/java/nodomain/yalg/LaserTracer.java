@@ -23,11 +23,16 @@ public class LaserTracer {
     //geometry as line segments (two per line segment)
     public static Result
     traceRecursion(PointF vLaserSource, PointF vLaserDir, float fIntensity, PointF[] geometry, float[] afRefractiveIndices){
-        if(fIntensity < 0.01f)
-            return new Result();
-
         List<PointF> lOutLines = new ArrayList<PointF>();
         List<Float> lOutIntensities = new ArrayList<Float>();
+
+        if(fIntensity < 0.01f) {
+            Result res = new Result();
+            res.intensities = lOutIntensities;
+            res.lineSegments = lOutLines;
+
+            return res;
+        }
 
         //populate output structure
         lOutLines.add(vLaserSource);
