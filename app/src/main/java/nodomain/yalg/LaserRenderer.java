@@ -15,7 +15,8 @@ public class LaserRenderer {
     private int m_VBO;
     private int m_IBO;
 
-    static int BYTES_PER_FLOAT = 4;
+    static final int BYTES_PER_FLOAT = 4;
+    static final float LASER_WIDTH = 0.02f;
 
     LaserRenderer()
     {
@@ -30,14 +31,22 @@ public class LaserRenderer {
         positions[offset] = 1;
     }
 
-    public void setLasers(Vector<float[]> linePositions, Vector<Integer> lineColors)
+    public void setLasers(Vector<PointF> linePositions, Vector<Integer> lineColors)
     {
         float[] quadPositions = new float[linePositions.size() * 4 * 3];
         int[] quadIndices = new int[quadPositions.length];
 
-        for (int i = 0; i < linePositions.size(); i++)
+        int currOffset = 0;
+        for (int i = 0; i < linePositions.size() - 1; i++)
         {
-
+            float[] p1 = linePositions.elementAt(+);
+            float[] p2 = linePositions.elementAt(i+1);
+            float[] dx = Vec2D.subtract(p1, p2);
+            float[] perp = Vec2D.perpendicular(dx);
+            float[] offset = Vec2D.normalize(perp)
+            addQuad(quadPositions, quadIndices, currOffset,
+                    Vec2D.add(p1))
+            currOffset += 4;
         }
 
         FloatBuffer positionsBuffer = ByteBuffer.allocateDirect(quadPositions.length * BYTES_PER_FLOAT)
