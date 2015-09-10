@@ -14,7 +14,6 @@ import java.util.Vector;
  */
 public class LaserRenderer {
     private final int m_VBO;
-    private final int m_IBO;
 
     private final int m_Program;
 
@@ -31,10 +30,16 @@ public class LaserRenderer {
 
     private final String fragmentShaderCode =
             "precision mediump float;" +
+                    "void main() {" +
+                    "  gl_FragColor = vec4(0, 1, 0, 1);" +
+                    "}";
+
+    /*private final String fragmentShaderCode =
+            "precision mediump float;" +
                     "uniform vec4 vColor;" +
                     "void main() {" +
                     "  gl_FragColor = vec4(0, 1, 0, 1); //vColor;" +
-                    "}";
+                    "}";*/
 
     public static int loadShader(int type, String shaderCode){
 
@@ -51,10 +56,9 @@ public class LaserRenderer {
 
     LaserRenderer()
     {
-        int[] tmp = new int[2];
-        GLES20.glGenBuffers(2, tmp, 0);
+        int[] tmp = new int[1];
+        GLES20.glGenBuffers(1, tmp, 0);
         m_VBO = tmp[0];
-        m_IBO = tmp[1];
 
         int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER,
                 vertexShaderCode);
@@ -78,7 +82,7 @@ public class LaserRenderer {
     {
         buffer[offset * 3] = pos.x;
         buffer[offset * 3 + 1] = pos.y;
-        buffer[offset * 3 + 2] = 0;
+        buffer[offset * 3 + 2] = 0.0f;
     }
 
     public void setLasers(Vector<PointF> linePositions) //, Vector<Integer> lineColors)
@@ -106,6 +110,10 @@ public class LaserRenderer {
             writePosToBuffer(corners[3], currVertexOffset + 4, quadPositions);
             writePosToBuffer(corners[2], currVertexOffset + 5, quadPositions);
 
+            System.out.println(corners[0]);
+            System.out.println(corners[2]);
+            System.out.println(corners[1]);
+
             currVertexOffset += 6;
         }
 
@@ -130,7 +138,7 @@ public class LaserRenderer {
         // Prepare the triangle coordinate data
         GLES20.glVertexAttribPointer(posHandle, 3,
                 GLES20.GL_FLOAT, false,
-                12, m_VBO);
+                0, 0);
 
         // get handle to fragment shader's vColor member
         // int colorHandle = GLES20.glGetUniformLocation(m_Program, "vColor");
