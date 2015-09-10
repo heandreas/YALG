@@ -110,10 +110,6 @@ public class LaserRenderer {
             writePosToBuffer(corners[3], currVertexOffset + 4, quadPositions);
             writePosToBuffer(corners[2], currVertexOffset + 5, quadPositions);
 
-            System.out.println(corners[0]);
-            System.out.println(corners[2]);
-            System.out.println(corners[1]);
-
             currVertexOffset += 6;
         }
 
