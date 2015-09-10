@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<yalg>
+    <level name = "level 1">
+        <gameobject type="laser" id="laser-1">
+            <position x="0.05" y="0.5" />
+            <orientation x="1" y="0"/>
+            <texture file="laser.png"/>
+            <color r="1" g="0" b="0"/>
+        </gameobject>
+
+        <gameobject type="refraction" id="prism-1">
+            <position x="0.5" y="0.5" />
+            <orientation x="1" y="0"/>
+            <texture file="prism.png"/>
+
+            <refraction_mesh>
+                <position x="-0.2" y="-0.1" />
+                <position x="0.2" y="-0.1" />
+                <position x="0" y="0.2" />
+            </refraction_mesh>
+
+            <refraction index="1.5" />
+        </gameobject>
+    </level>
+</yalg>
