@@ -1,5 +1,6 @@
 package nodomain.yalg;
 
+import android.graphics.PointF;
 import android.opengl.GLES20;
 
 import java.nio.ByteBuffer;
@@ -39,13 +40,13 @@ public class LaserRenderer {
         int currOffset = 0;
         for (int i = 0; i < linePositions.size() - 1; i++)
         {
-            float[] p1 = linePositions.elementAt(+);
-            float[] p2 = linePositions.elementAt(i+1);
-            float[] dx = Vec2D.subtract(p1, p2);
-            float[] perp = Vec2D.perpendicular(dx);
-            float[] offset = Vec2D.normalize(perp)
-            addQuad(quadPositions, quadIndices, currOffset,
-                    Vec2D.add(p1))
+            PointF p1 = linePositions.elementAt(+);
+            PointF p2 = linePositions.elementAt(i+1);
+            PointF dx = Vec2D.subtract(p1, p2);
+            PointF perp = Vec2D.perpendicular(dx);
+            Vec2D.normalize(perp);
+            // addQuad(quadPositions, quadIndices, currOffset,
+            //        Vec2D.add(p1))
             currOffset += 4;
         }
 

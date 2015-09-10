@@ -8,7 +8,7 @@ import java.lang.Math;
  */
 public class Vec2D {
     //A-B
-    static public PointF add(PointF vectorA, PointF vectorB) {
+    static public PointF subtract(PointF vectorA, PointF vectorB) {
         return new PointF(vectorA.x - vectorB.x, vectorA.y - vectorB.y);
     }
 
@@ -26,5 +26,11 @@ public class Vec2D {
 
     static public PointF perpendicular(PointF vector) {
         return new PointF(-vector.y, vector.x);
+    }
+
+    static public void normalize(PointF vector) {
+        float length = vector.length();
+        vector.x /= length;
+        vector.y /= length;
     }
 }
