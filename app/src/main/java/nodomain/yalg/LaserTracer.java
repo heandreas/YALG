@@ -20,8 +20,14 @@ public class LaserTracer {
     }
 
     public static Vector<float[]>
+    traceRecursion(laserSource, float fIntensity, Vector<float[]> geometry, float[] afRefractiveIndices){
+
+    }
+
+    public static Vector<float[]>
     trace(Vector<float[]> laserSources, int[] laserColors, Vector<float[]> geometry, float[] afRefractiveIndices){
         Vector<float[]> vOutput = new Vector<float[]>();
+        float[] outData = new float[3];
 
         //trace each source
         for (float[] afSource:
@@ -30,14 +36,44 @@ public class LaserTracer {
             vSource[0] = afSource[0];
             vSource[1] = afSource[1];
 
+            outData[0] = vSource.x;
+            outData[1] = vSource.y;
+            outData[2] = 1.0f;
+
+
+            vOutput.add(outData);
+
             float[] vDir = new float[2];
             vDir[0] = afSource[2];
             vDir[1] = afSource[3];
 
             //check each geometry line against this ray
+            for (float[] afGeom:
+                    geometry) {
+                //check if source on right side
+                float[] line0 = new float[2];
+                line0[0] = afGeom[0];
+                line0[1] = afGeom[1];
+
+                float[] line1 = new float[2];
+                line1[0] = afGeom[2];
+                line1[1] = afGeom[3];
+
+                if(Vec2D.dot(Vec2D.perpendicular(Vec2D.subtract(line1 - line0) ), Vec2D.subtract(vSource - line0)) < 0)
+                    continue;
+
+                float fIntersection = intersectRayLine(vSource, vDir, line0, line1);
+                if(fIntersection > 0.0f && fIntersection < 1.0f){
+                    //stuff intersects
+                    //calculate intersection point
+                    vIntersection = line0 + (line1 - line0) fIntersection;
+                    //finalize current line segment
+                    vOutput.add(vSource);
+                }
+
+            }
 
 
-            vOutput.add(vSource);
         }
         
         return vOutput;
