@@ -1,20 +1,11 @@
 package nodomain.yalg;
 
 import java.util.ArrayList;
-import java.util.Vector;
 import java.util.List;
+import java.lang.Math;
 import android.graphics.PointF;
 
-/**
- * Data format sources:
- * x,y, dx,dy
- *
- * geometry format
- * x0,y0, y1,y1
- *
- * output format
- * x,y, intensity
- */
+
 public class LaserTracer {
     public static float intersectRayLine(PointF rayPos, PointF rayDir,
                                          PointF line0, PointF line1){
@@ -27,9 +18,14 @@ public class LaserTracer {
         public List<Float> intensities;
     }
 
+    //TODO: add color
+
     //geometry as line segments (two per line segment)
     public static Result
     traceRecursion(PointF vLaserSource, PointF vLaserDir, float fIntensity, PointF[] geometry, float[] afRefractiveIndices){
+        if(fIntensity < 0.01f)
+            return new Result();
+
         List<PointF> lOutLines = new ArrayList<PointF>();
         List<Float> lOutIntensities = new ArrayList<Float>();
 
@@ -74,54 +70,50 @@ public class LaserTracer {
             PointF line0 = geometry[iHitIndex*2];
             PointF line1 = geometry[iHitIndex*2 + 1];
 
+            //calculate normalized surface normal
             PointF vLine = Vec2D.subtract(line1, line0);
-            Vec2D.normalize(vLine);
-            PointF vLineSource = Vec2D.subtract(vLaserSource, line0);
-            Vec2D.normalize(vLineSource);
+            PointF vSurfaceNormal = Vec2D.perpendicular(vLine);
+            Vec2D.normalize(vSurfaceNormal);
 
-            float fAngle = Vec2D.dot(Vec2D.perpendicular(vLine), vLineSource);
+            //calculate direction of reflection
+            PointF vReflected = Vec2D.subtract(Vec2D.mul(2.0f, Vec2D.mul(Vec2D.dot(vSurfaceNormal, vLaserDir), vSurfaceNormal)), vLaserDir);
 
+            //calculate angle of refraction
+            double fImpactAngle = Math.acos(Vec2D.dot(vSurfaceNormal, vLaserDir));
+            double fRefractionAngle = Math.asin(Math.sin(fImpactAngle) / afRefractiveIndices[iHitIndex]);
 
+            //calculate direction of refraction
+            double fSurfaceAngle = Math.atan2(vSurfaceNormal.x, vSurfaceNormal.y);
+            PointF vRefracted = new PointF((float)Math.sin(fSurfaceAngle + fRefractionAngle), (float)Math.cos(fSurfaceAngle + fRefractionAngle));
+
+            //calculate amount of light reflected
+            float fReflected = - (float) (Math.sin(fImpactAngle - fRefractionAngle) / Math.sin(fImpactAngle + fRefractionAngle) );
+            float fRefracted = 1.0f - fReflected;
+
+            //calculate point of impact
             float fIntersection = intersectRayLine(vLaserSource, vLaserDir, line0, line1);
             PointF vIntersection = Vec2D.mul(fIntersection, Vec2D.add(line0 , Vec2D.subtract(line1, line0)) );
 
             //spam line end
             lOutLines.add(vIntersection);
 
-            //calculate direction of reflected ray
-            //calculate inbound angle
+            //continue with recursion, reflection
+            Result res = traceRecursion(vIntersection, vReflected, fReflected * fIntensity, geometry, afRefractiveIndices);
+            //merge results
+            lOutLines.addAll(res.lineSegments);
+            lOutIntensities.addAll(res.intensities);
+
+            //continue with recursion, refraction
+            res = traceRecursion(vIntersection, vRefracted, fRefracted*fIntensity, geometry, afRefractiveIndices);
+            //merge results
+            lOutLines.addAll(res.lineSegments);
+            lOutIntensities.addAll(res.intensities);
         }
 
         Result res = new Result();
         res.intensities = lOutIntensities;
         res.lineSegments = lOutLines;
 
-        return res;
-    }
-
-    public static Result
-    trace(Vector<float[]> laserSources, int[] laserColors, Vector<float[]> geometry, float[] afRefractiveIndices){
-
-
-        //trace each source
-        for (float[] afSource:
-                laserSources) {
-            float[] vSource = new float[2];
-            vSource[0] = afSource[0];
-            vSource[1] = afSource[1];
-
-            //vOutput.add(outData);
-
-            float[] vDir = new float[2];
-            vDir[0] = afSource[2];
-            vDir[1] = afSource[3];
-
-
-
-        }
-
-        Result res = new Result();
-        
         return res;
     }
 }
