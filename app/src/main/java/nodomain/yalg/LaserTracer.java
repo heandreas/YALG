@@ -65,7 +65,7 @@ public class LaserTracer {
         if(iHitIndex == -1)
         {
             //bigger than screen
-            lOutLines.add(Vec2D.add(vLaserSource, Vec2D.mul(2, vLaserDir));
+            lOutLines.add(Vec2D.add(vLaserSource, Vec2D.mul(2, vLaserDir)) );
         }
         else
         {
