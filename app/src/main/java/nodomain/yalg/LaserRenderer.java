@@ -6,8 +6,7 @@ import android.opengl.GLES20;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * Created by andreas on 10.09.2015.
@@ -85,7 +84,7 @@ public class LaserRenderer {
         buffer[offset * 3 + 2] = 0.0f;
     }
 
-    public void setLasers(Vector<PointF> linePositions) //, Vector<Integer> lineColors)
+    public void setLasers(List<PointF> linePositions) //, Vector<Integer> lineColors)
     {
         m_NumVertices = (linePositions.size() / 2) * 6;
         float[] quadPositions = new float[m_NumVertices * 3];
@@ -93,8 +92,8 @@ public class LaserRenderer {
         int currVertexOffset = 0;
         for (int i = 0; i < linePositions.size() - 1; i += 2)
         {
-            PointF p1 = linePositions.elementAt(i);
-            PointF p2 = linePositions.elementAt(i + 1);
+            PointF p1 = linePositions.get(i);
+            PointF p2 = linePositions.get(i + 1);
             PointF dx = Vec2D.subtract(p1, p2);
             PointF perp = Vec2D.perpendicular(dx);
             Vec2D.normalize(perp);

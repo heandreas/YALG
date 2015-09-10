@@ -6,6 +6,8 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -27,10 +29,10 @@ public class YalgGLSurface extends GLSurfaceView {
             public void onSurfaceCreated(GL10 gl, EGLConfig config) {
                 GLES20.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
                 m_LaserRenderer = new LaserRenderer();
-                Vector<PointF> lines = new Vector<PointF>();
+                /*List<PointF> lines = new ArrayList<PointF>();
                 lines.add(new PointF(0, 0));
                 lines.add(new PointF(1, 1));
-                m_LaserRenderer.setLasers(lines);
+                m_LaserRenderer.setLasers(lines);*/
             }
 
             @Override
@@ -41,6 +43,11 @@ public class YalgGLSurface extends GLSurfaceView {
             @Override
             public void onDrawFrame(GL10 gl) {
                 GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
+                PointF[] obstacles = {new PointF(-0.4f, 0.2f), new PointF(-0.5f, 0.0f)};
+                float[] coefficients = {1.5f};
+                LaserTracer.Result result = LaserTracer.traceRecursion(new PointF(0.1f, 0.1f), new PointF(-1.0f, 0.0f), 1.0f, obstacles, coefficients);
+                m_LaserRenderer.setLasers(result.lineSegments);
                 m_LaserRenderer.render();
             }
         });
