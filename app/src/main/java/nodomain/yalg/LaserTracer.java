@@ -89,7 +89,7 @@ public class LaserTracer {
 
             //calculate direction of refraction
             double fInvertedSurfaceAngle = Math.atan2(-vSurfaceNormal.y, -vSurfaceNormal.x);
-            PointF vRefracted = new PointF((float)Math.sin(fInvertedSurfaceAngle + fRefractionAngle), (float)Math.cos(fInvertedSurfaceAngle + fRefractionAngle));
+            PointF vRefracted = new PointF((float)Math.cos(fInvertedSurfaceAngle + fRefractionAngle), (float)Math.sin(fInvertedSurfaceAngle + fRefractionAngle));
 
             //calculate amount of light reflected
             //float fReflected = - (float) (Math.sin(2.0f * fImpactAngle - fRefractionAngle) / Math.sin(2.0f * fImpactAngle + fRefractionAngle) );
