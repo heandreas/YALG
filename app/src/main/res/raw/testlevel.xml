@@ -7,7 +7,7 @@
         <color r="1" g="0" b="0"/>
     </gameobject>
 
-    <gameobject type="refraction" id="prism-1">
+    <gameobject type="refractor" id="prism-1">
         <position x="0.5" y="0.5" />
         <orientation x="1" y="0"/>
         <texture file="prism.png"/>
