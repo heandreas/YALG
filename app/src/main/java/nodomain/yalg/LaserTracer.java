@@ -3,14 +3,29 @@ package nodomain.yalg;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.Math;
+
 import android.graphics.PointF;
 
 
 public class LaserTracer {
+    //returns barycentric position on line
+    public static float intersectRayOnLine(PointF rayPos, PointF rayDir,
+                                         PointF line0, PointF line1){
+        PointF v1 = Vec2D.subtract(rayPos, line0);
+        PointF v2 = Vec2D.subtract(line1, line0);
+        PointF v3 = Vec2D.perpendicular(rayDir);
+
+        return Vec2D.dot(v1, v3) / Vec2D.dot(v2, v3);
+    }
+
     public static float intersectRayLine(PointF rayPos, PointF rayDir,
                                          PointF line0, PointF line1){
-        return Vec2D.dot(Vec2D.subtract(rayPos, line0), Vec2D.perpendicular(rayDir)) /
-                Vec2D.dot(Vec2D.subtract(line1, line0), Vec2D.perpendicular(rayDir));
+        //cull hits on the back side of the ray
+        float fPosOnRay = intersectRayOnLine(line0, Vec2D.subtract(line1, line0), rayPos, Vec2D.add(rayPos, rayDir) );
+
+        if(fPosOnRay < 0)
+            return Float.NEGATIVE_INFINITY;
+        return intersectRayOnLine(rayPos, rayDir, line0, line1);
     }
 
      public static class Result{
@@ -26,7 +41,7 @@ public class LaserTracer {
         List<PointF> lOutLines = new ArrayList<PointF>();
         List<Float> lOutIntensities = new ArrayList<Float>();
 
-        if(fIntensity < 0.01f) {
+        if(fIntensity < 0.05f) {
             Result res = new Result();
             res.intensities = lOutIntensities;
             res.lineSegments = lOutLines;
@@ -45,9 +60,6 @@ public class LaserTracer {
             //check if source on right side
             PointF line0 = geometry[iLine*2];
             PointF line1 = geometry[iLine*2 + 1];
-
-            if(Vec2D.dot(Vec2D.perpendicular(Vec2D.subtract(line1, line0) ), Vec2D.subtract(vLaserSource, line0)) < 0)
-                continue;
 
             float fIntersection = intersectRayLine(vLaserSource, vLaserDir, line0, line1);
             if(fIntersection > 0.0f && fIntersection < 1.0f){
@@ -77,23 +89,45 @@ public class LaserTracer {
 
             //calculate normalized surface normal
             PointF vLine = Vec2D.subtract(line1, line0);
-            PointF vSurfaceNormal = Vec2D.perpendicular(vLine);
+            PointF vSurfaceNormal = Vec2D.flip(Vec2D.perpendicular(vLine));
             Vec2D.normalize(vSurfaceNormal);
 
             //calculate direction of reflection
             PointF vReflected = Vec2D.add(Vec2D.mul(-2.0f, Vec2D.mul(Vec2D.dot(vSurfaceNormal, vLaserDir), vSurfaceNormal)), vLaserDir);
 
-            //calculate angle of refraction
-            double fImpactAngle = Math.acos(Vec2D.dot(vSurfaceNormal, Vec2D.flip(vLaserDir) ));
-            double fRefractionAngle = Math.asin(Math.sin(fImpactAngle) / afRefractiveIndices[iHitIndex]);
+            double fImpactAngle = Math.acos(Vec2D.dot(vSurfaceNormal, Vec2D.flip(vLaserDir)));
+            double fRefractionAngle = 0.0f;
+            float fRefracted = 0.0f;
+            boolean bTotalReflection = false;
+
+            //calculate which side of the object we're on
+            if(Vec2D.dot(vSurfaceNormal, Vec2D.subtract(vLaserSource, line0) ) < 0){
+                //from medium to air
+                //angle will become bigger
+                double fSinAngle = Math.sin(fImpactAngle) * afRefractiveIndices[iHitIndex];
+                if(fSinAngle > 1.0f || fSinAngle < -1.0f)
+                    bTotalReflection = true;
+
+                else{
+                    fRefractionAngle = Math.asin(fSinAngle);
+
+                    float fFlippedImpactAngle = (float) Math.asin(Math.sin(fImpactAngle));
+                    fRefracted = (float) (2.0f * Math.sin(fFlippedImpactAngle)*Math.cos( fRefractionAngle ) / Math.sin(fFlippedImpactAngle + fRefractionAngle) );
+
+                    }
+                }
+            else{
+                //from air to medium
+                //angle will become smaller
+                fRefractionAngle = Math.asin(Math.sin(fImpactAngle) / afRefractiveIndices[iHitIndex]);
+                fRefracted = (float) (2.0f * Math.sin(fRefractionAngle)*Math.cos( fImpactAngle ) / Math.sin(fImpactAngle + fRefractionAngle) );
+            }
 
             //calculate direction of refraction
             double fInvertedSurfaceAngle = Math.atan2(-vSurfaceNormal.y, -vSurfaceNormal.x);
             PointF vRefracted = new PointF((float)Math.cos(fInvertedSurfaceAngle + fRefractionAngle), (float)Math.sin(fInvertedSurfaceAngle + fRefractionAngle));
 
             //calculate amount of light reflected
-            //float fReflected = - (float) (Math.sin(2.0f * fImpactAngle - fRefractionAngle) / Math.sin(2.0f * fImpactAngle + fRefractionAngle) );
-            float fRefracted = (float) (2.0f * Math.sin(fRefractionAngle)*Math.cos(fImpactAngle) / Math.sin(2.0f * fImpactAngle + fRefractionAngle) );
             float fReflected = 1.0f - fRefracted;
 
             //calculate point of impact
@@ -110,10 +144,12 @@ public class LaserTracer {
             lOutIntensities.addAll(res.intensities);
 
             //continue with recursion, refraction
-            res = traceRecursion(vIntersection, vRefracted, fRefracted*fIntensity, geometry, afRefractiveIndices);
-            //merge results
-            lOutLines.addAll(res.lineSegments);
-            lOutIntensities.addAll(res.intensities);
+            if(!bTotalReflection) {
+                res = traceRecursion(vIntersection, vRefracted, fRefracted * fIntensity, geometry, afRefractiveIndices);
+                //merge results
+                lOutLines.addAll(res.lineSegments);
+                lOutIntensities.addAll(res.intensities);
+            }
         }
 
         Result res = new Result();

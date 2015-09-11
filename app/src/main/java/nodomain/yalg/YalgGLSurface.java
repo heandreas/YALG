@@ -68,13 +68,15 @@ public class YalgGLSurface extends GLSurfaceView {
     public YalgGLSurface(Context context) {
         super(context);
 
-        System.out.println("Setting EGL context.");
-
         // TODO: remove debug call
-        PointF[] obstacles = {new PointF(-0.4f, 0.2f), new PointF(-0.5f, 0.0f)};
-        float[] coefficients = {1.5f};
-        LaserTracer.Result result = LaserTracer.traceRecursion(new PointF(0.1f, 0.1f), new PointF(-1.0f, 0.0f), 1.0f, obstacles, coefficients);
+        PointF[] obstacles = {new PointF(-0.4f, -0.2f), new PointF(0.4f, -0.2f),
+                                new PointF(0.4f, -0.2f), new PointF(0.0f, 0.4f),
+                                new PointF(0.0f, 0.4f), new PointF(-0.4f, -0.2f)};
+        float[] coefficients = {1.5f, 1.5f, 1.5f};
+        LaserTracer.Result result = LaserTracer.traceRecursion(new PointF(0.8f, 0.0f), new PointF(-1.0f, 0.0f), 1.0f, obstacles, coefficients);
 
+
+        System.out.println("Setting EGL context.");
         setEGLContextClientVersion(2);
         setRenderer(new Renderer() {
             @Override
