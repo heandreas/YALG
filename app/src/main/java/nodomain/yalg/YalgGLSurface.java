@@ -23,10 +23,19 @@ public class YalgGLSurface extends GLSurfaceView {
     public YalgGLSurface(Context context) {
         super(context);
 
+        System.out.println("Setting EGL context.");
+
+        // TODO: remove debug call
+        PointF[] obstacles = {new PointF(-0.4f, 0.2f), new PointF(-0.5f, 0.0f)};
+        float[] coefficients = {1.5f};
+        LaserTracer.Result result = LaserTracer.traceRecursion(new PointF(0.1f, 0.1f), new PointF(-1.0f, 0.0f), 1.0f, obstacles, coefficients);
+
         setEGLContextClientVersion(2);
         setRenderer(new Renderer() {
             @Override
             public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+                System.out.println("GL Surface created.");
+
                 GLES20.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
                 m_LaserRenderer = new LaserRenderer();
                 /*List<PointF> lines = new ArrayList<PointF>();
@@ -37,6 +46,8 @@ public class YalgGLSurface extends GLSurfaceView {
 
             @Override
             public void onSurfaceChanged(GL10 gl, int width, int height) {
+                System.out.println("GL Surface changed.");
+
                 GLES20.glViewport(0, 0, width, height);
             }
 

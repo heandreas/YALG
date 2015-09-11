@@ -28,6 +28,10 @@ public class Vec2D {
         return new PointF(-vector.y, vector.x);
     }
 
+    static public PointF flip(PointF vector) {
+        return new PointF(-vector.x, -vector.y);
+    }
+
     static public void normalize(PointF vector) {
         float length = vector.length();
         vector.x /= length;

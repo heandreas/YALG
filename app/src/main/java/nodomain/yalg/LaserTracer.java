@@ -53,10 +53,10 @@ public class LaserTracer {
             if(fIntersection > 0.0f && fIntersection < 1.0f){
                 //stuff intersects
                 //calculate intersection point
-                PointF vIntersection = Vec2D.mul(fIntersection, Vec2D.add(line0 , Vec2D.subtract(line1, line0)) );
+                PointF vIntersection = Vec2D.add(line0, Vec2D.mul(fIntersection, Vec2D.subtract(line1, line0)) );
                 //calculate distance to source
                 float fHitDistance = Vec2D.subtract(vLaserSource, vIntersection).length();
-                if(Vec2D.subtract(vLaserSource, vIntersection).length() < fNearestHit) {
+                if(Vec2D.subtract(vLaserSource, vIntersection).length() < fNearestHit && fHitDistance > 0.001f) {
                     fNearestHit = fHitDistance;
                     iHitIndex = iLine;
                 }
@@ -66,7 +66,7 @@ public class LaserTracer {
         if(iHitIndex == -1)
         {
             //bigger than screen
-            lOutLines.add(Vec2D.add(vLaserSource, Vec2D.mul(2, vLaserDir)) );
+            lOutLines.add(Vec2D.add(vLaserSource, Vec2D.mul(3, vLaserDir)) );
         }
         else
         {
@@ -81,23 +81,24 @@ public class LaserTracer {
             Vec2D.normalize(vSurfaceNormal);
 
             //calculate direction of reflection
-            PointF vReflected = Vec2D.subtract(Vec2D.mul(2.0f, Vec2D.mul(Vec2D.dot(vSurfaceNormal, vLaserDir), vSurfaceNormal)), vLaserDir);
+            PointF vReflected = Vec2D.add(Vec2D.mul(-2.0f, Vec2D.mul(Vec2D.dot(vSurfaceNormal, vLaserDir), vSurfaceNormal)), vLaserDir);
 
             //calculate angle of refraction
-            double fImpactAngle = Math.acos(Vec2D.dot(vSurfaceNormal, vLaserDir));
+            double fImpactAngle = Math.acos(Vec2D.dot(vSurfaceNormal, Vec2D.flip(vLaserDir) ));
             double fRefractionAngle = Math.asin(Math.sin(fImpactAngle) / afRefractiveIndices[iHitIndex]);
 
             //calculate direction of refraction
-            double fSurfaceAngle = Math.atan2(vSurfaceNormal.x, vSurfaceNormal.y);
-            PointF vRefracted = new PointF((float)Math.sin(fSurfaceAngle + fRefractionAngle), (float)Math.cos(fSurfaceAngle + fRefractionAngle));
+            double fInvertedSurfaceAngle = Math.atan2(-vSurfaceNormal.y, -vSurfaceNormal.x);
+            PointF vRefracted = new PointF((float)Math.sin(fInvertedSurfaceAngle + fRefractionAngle), (float)Math.cos(fInvertedSurfaceAngle + fRefractionAngle));
 
             //calculate amount of light reflected
-            float fReflected = - (float) (Math.sin(fImpactAngle - fRefractionAngle) / Math.sin(fImpactAngle + fRefractionAngle) );
-            float fRefracted = 1.0f - fReflected;
+            //float fReflected = - (float) (Math.sin(2.0f * fImpactAngle - fRefractionAngle) / Math.sin(2.0f * fImpactAngle + fRefractionAngle) );
+            float fRefracted = (float) (2.0f * Math.sin(fRefractionAngle)*Math.cos(fImpactAngle) / Math.sin(2.0f * fImpactAngle + fRefractionAngle) );
+            float fReflected = 1.0f - fRefracted;
 
             //calculate point of impact
             float fIntersection = intersectRayLine(vLaserSource, vLaserDir, line0, line1);
-            PointF vIntersection = Vec2D.mul(fIntersection, Vec2D.add(line0 , Vec2D.subtract(line1, line0)) );
+            PointF vIntersection = Vec2D.add(line0, Vec2D.mul(fIntersection, Vec2D.subtract(line1, line0)) );
 
             //spam line end
             lOutLines.add(vIntersection);
