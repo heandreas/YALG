@@ -21,6 +21,7 @@ import android.view.View;
 public class YALG extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("Starting YALG.");
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_yalg);
@@ -29,6 +30,7 @@ public class YALG extends Activity {
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println("Starting Game.");
                 Intent myIntent = new Intent(YALG.this, GameActivity.class);
                 myIntent.putExtra("Level", 0);
                 YALG.this.startActivity(myIntent);
