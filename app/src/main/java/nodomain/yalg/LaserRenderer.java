@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by andreas on 10.09.2015.
@@ -19,18 +20,22 @@ public class LaserRenderer {
     private int m_NumVertices;
 
     static final int BYTES_PER_FLOAT = 4;
-    static final float LASER_WIDTH = 0.02f;
+    static final float LASER_WIDTH = 0.01f;
 
     private final String vertexShaderCode =
-            "attribute vec4 vPosition;" +
+                    "attribute vec3 vPosition;" +
+                    "attribute vec3 vColor;" +
+                    "varying vec3 col;" +
                     "void main() {" +
-                    "  gl_Position = vPosition;" +
+                    "  gl_Position = vec4(vPosition, 1);" +
+                    "  col = vColor;" +
                     "}";
 
     private final String fragmentShaderCode =
-            "precision mediump float;" +
+                    "precision mediump float;" +
+                    "varying vec3 col;" +
                     "void main() {" +
-                    "  gl_FragColor = vec4(0, 1, 0, 1);" +
+                    "  gl_FragColor = vec4(col, 1);" +
                     "}";
 
     /*private final String fragmentShaderCode =
@@ -77,17 +82,21 @@ public class LaserRenderer {
         GLES20.glLinkProgram(m_Program);
     }
 
-    static void writePosToBuffer(PointF pos, int offset, float[] buffer)
+    static void writePosToBuffer(PointF pos, ColorF color, int offset, float[] buffer)
     {
-        buffer[offset * 3] = pos.x;
-        buffer[offset * 3 + 1] = pos.y;
-        buffer[offset * 3 + 2] = 0.0f;
+        buffer[offset * 6] = pos.x;
+        buffer[offset * 6 + 1] = pos.y;
+        buffer[offset * 6 + 2] = 0.0f;
+
+        buffer[offset * 6 + 3] = color.getRed();
+        buffer[offset * 6 + 4] = color.getGreen();
+        buffer[offset * 6 + 5] = color.getBlue();
     }
 
-    public void setLasers(List<PointF> linePositions) //, Vector<Integer> lineColors)
+    public void setLasers(List<PointF> linePositions, List<ColorF> lineColors)
     {
         m_NumVertices = (linePositions.size() / 2) * 6;
-        float[] quadPositions = new float[m_NumVertices * 3];
+        float[] quadVertices = new float[m_NumVertices * 6];
 
         int currVertexOffset = 0;
         for (int i = 0; i < linePositions.size() - 1; i += 2)
@@ -101,23 +110,25 @@ public class LaserRenderer {
 
             PointF[] corners = {Vec2D.add(p1, offset), Vec2D.subtract(p1, offset), Vec2D.subtract(p2, offset), Vec2D.add(p2, offset)};
 
-            writePosToBuffer(corners[0], currVertexOffset, quadPositions);
-            writePosToBuffer(corners[2], currVertexOffset + 1, quadPositions);
-            writePosToBuffer(corners[1], currVertexOffset + 2, quadPositions);
+            ColorF col = lineColors.get(i / 2);
 
-            writePosToBuffer(corners[0], currVertexOffset + 3, quadPositions);
-            writePosToBuffer(corners[3], currVertexOffset + 4, quadPositions);
-            writePosToBuffer(corners[2], currVertexOffset + 5, quadPositions);
+            writePosToBuffer(corners[0], col, currVertexOffset, quadVertices);
+            writePosToBuffer(corners[2], col, currVertexOffset + 1, quadVertices);
+            writePosToBuffer(corners[1], col, currVertexOffset + 2, quadVertices);
+
+            writePosToBuffer(corners[0], col, currVertexOffset + 3, quadVertices);
+            writePosToBuffer(corners[3], col, currVertexOffset + 4, quadVertices);
+            writePosToBuffer(corners[2], col, currVertexOffset + 5, quadVertices);
 
             currVertexOffset += 6;
         }
 
-        FloatBuffer positionsBuffer = ByteBuffer.allocateDirect(quadPositions.length * BYTES_PER_FLOAT)
+        FloatBuffer vertexBuffer = ByteBuffer.allocateDirect(quadVertices.length * BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        positionsBuffer.put(quadPositions).position(0);
+        vertexBuffer.put(quadVertices).position(0);
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, m_VBO);
-        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, positionsBuffer.capacity() * BYTES_PER_FLOAT, positionsBuffer, GLES20.GL_STATIC_DRAW);
+        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexBuffer.capacity() * BYTES_PER_FLOAT, vertexBuffer, GLES20.GL_STATIC_DRAW);
     }
 
     public void render()
@@ -133,13 +144,17 @@ public class LaserRenderer {
         // Prepare the triangle coordinate data
         GLES20.glVertexAttribPointer(posHandle, 3,
                 GLES20.GL_FLOAT, false,
-                0, 0);
+                24, 0);
 
-        // get handle to fragment shader's vColor member
-        // int colorHandle = GLES20.glGetUniformLocation(m_Program, "vColor");
+        int colorHandle = GLES20.glGetAttribLocation(m_Program, "vColor");
 
-        // Set color for drawing the triangle
-        // GLES20.glUniform4fv(colorHandle, 1, color, 0);
+        // Enable a handle to the triangle vertices
+        GLES20.glEnableVertexAttribArray(colorHandle);
+
+        // Prepare the triangle coordinate data
+        GLES20.glVertexAttribPointer(colorHandle, 3,
+                GLES20.GL_FLOAT, false,
+                24, 12);
 
         // Draw the triangles.
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, m_NumVertices);

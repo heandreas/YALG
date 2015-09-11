@@ -47,21 +47,25 @@ public class YalgGLSurface extends GLSurfaceView {
             coefficientsArray[i] = coefficients.get(i);
 
         ArrayList<PointF> laserSegments = new ArrayList<PointF>();
+        ArrayList<ColorF> laserColors = new ArrayList<ColorF>();
         for (int i = 0; i < origins.size(); i++)
         {
-            LaserTracer.Result result = LaserTracer.traceRecursion(origins.get(i), dirs.get(i),
+            /*LaserTracer.Result result = LaserTracer.traceRecursion(origins.get(i), dirs.get(i),
                     1.0f, lineSegmentsArray, coefficientsArray);
             for (PointF p : result.lineSegments)
-                laserSegments.add(p);
+                laserSegments.add(p);*/
         }
 
         // Hack: Add obstacles as lasers. Yeah...
         for (int i = 0; i < lineSegments.size(); i++) {
             PointF p = lineSegments.get(i);
             laserSegments.add(p);
+            if (i % 2 == 0)
+                laserColors.add(new ColorF(0, 0, 1));
+
         }
 
-        laserRenderer.setLasers(laserSegments);
+        laserRenderer.setLasers(laserSegments, laserColors);
         laserRenderer.render();
     }
 
