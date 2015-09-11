@@ -12,11 +12,11 @@
         <orientation x="1" y="0"/>
         <texture file="prism.png"/>
 
-        <refraction_mesh>
+        <mesh>
             <position x="-0.2" y="-0.1" />
             <position x="0.2" y="-0.1" />
             <position x="0" y="0.2" />
-        </refraction_mesh>
+        </mesh>
 
         <refraction index="1.5" />
     </gameobject>

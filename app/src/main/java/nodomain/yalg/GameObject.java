@@ -2,12 +2,14 @@ package nodomain.yalg;
 
 import android.graphics.PointF;
 
+import java.util.ArrayList;
+
 /**
  * Created by andreas on 10.09.2015.
  */
 public abstract class GameObject {
-    protected PointF m_Position;
-    protected PointF m_Direction;
+    protected PointF m_Position = new PointF(0, 0);
+    protected PointF m_Direction = new PointF(1, 0);
 
     protected boolean m_IsActive = true;
     protected boolean m_MustBeActiveForWinning = false;
@@ -47,8 +49,14 @@ public abstract class GameObject {
 
     public void setDirection(PointF direction) {
         m_Direction = direction;
+        Vec2D.normalize(m_Direction);
     }
     PointF getDirection() {
         return m_Direction;
     }
+
+    public void getRefractors(ArrayList<PointF> lineSegments, ArrayList<Float> coefficients) {}
+    public void getRays(ArrayList<PointF> origins, ArrayList<PointF> dirs) {}
+    public void render() {}
+
 }

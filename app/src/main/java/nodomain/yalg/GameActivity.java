@@ -23,15 +23,20 @@ import java.util.List;
  * @see SystemUiHider
  */
 public class GameActivity extends Activity {
+
+    YalgGLSurface glSurface;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(new YalgGLSurface(this));
+        glSurface = new YalgGLSurface(this);
+        setContentView(glSurface);
 
         try {
             List<GameObject> objects = LevelLoader.parse(getResources().openRawResource(R.raw.testlevel));
             System.out.println("Read " + objects.size() + " objects.");
+            glSurface.setGameObjects(objects);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {

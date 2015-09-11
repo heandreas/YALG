@@ -1,5 +1,6 @@
 package nodomain.yalg;
 
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.util.Xml;
 
@@ -40,6 +41,23 @@ public class LevelLoader {
         return new PointF(Float.parseFloat(x), Float.parseFloat(y));
     }
 
+    static ColorF readColor(XmlPullParser parser) throws IOException, XmlPullParserException, NumberFormatException {
+        String r = parser.getAttributeValue(null, "r");
+        String g = parser.getAttributeValue(null, "g");
+        String b = parser.getAttributeValue(null, "b");
+        parser.nextTag();
+        return new ColorF(Float.parseFloat(r), Float.parseFloat(g), Float.parseFloat(b));
+    }
+
+    static void readMesh(XmlPullParser parser, Refractor refractor) throws XmlPullParserException, IOException {
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            refractor.addMeshPoint(readPoint(parser));
+        }
+    }
+
     static void readGameObject(XmlPullParser parser, List<GameObject> gameObjects) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, null, "gameobject");
         String type = parser.getAttributeValue(null, "type");
@@ -71,6 +89,13 @@ public class LevelLoader {
             }
             else if (name.equals("orientation")) {
                 obj.setDirection(readPoint(parser));
+            }
+            else if (name.equals("mesh")) {
+                readMesh(parser, (Refractor)obj);
+            }
+            else if (name.equals("texture")) {
+                obj.setTextureName(parser.getAttributeValue(null, "file"));
+                parser.nextTag();
             } else {
                 skip(parser);
             }

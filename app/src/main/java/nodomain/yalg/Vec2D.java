@@ -37,4 +37,15 @@ public class Vec2D {
         vector.x /= length;
         vector.y /= length;
     }
+
+    static public PointF normalized(PointF vector) {
+        PointF norm = new PointF(vector.x, vector.y);
+        normalize(norm);
+        return norm;
+    }
+
+    static public PointF rotatePoint(PointF point, PointF dir) {
+        return new PointF(dir.x * point.x + (-dir.y) * point.y,
+                dir.y * point.x + dir.x * point.y);
+    }
 }
