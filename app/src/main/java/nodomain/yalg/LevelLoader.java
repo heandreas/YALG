@@ -96,6 +96,9 @@ public class LevelLoader {
             else if (name.equals("texture")) {
                 obj.setTextureName(parser.getAttributeValue(null, "file"));
                 parser.nextTag();
+            } else if (name.equals("refraction")) {
+                ((Refractor)obj).setRefractionIndex(Float.parseFloat(parser.getAttributeValue(null, "index")));
+                parser.nextTag();
             } else if (name.equals("movable")) {
                 obj.setIsMovable(true);
                 parser.nextTag();

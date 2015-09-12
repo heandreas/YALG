@@ -48,4 +48,8 @@ public class Vec2D {
         return new PointF(dir.x * point.x + (-dir.y) * point.y,
                 dir.y * point.x + dir.x * point.y);
     }
+
+    static public PointF invertRotation(PointF dir) {
+        return new PointF(dir.x, -dir.y);
+    }
 }
