@@ -4,10 +4,12 @@ import nodomain.yalg.util.SystemUiHider;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.opengl.GLSurfaceView;
@@ -83,12 +85,34 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
 
-        // TODO: remove debug call
         ArrayList<PointF> laserSegments = new ArrayList<PointF>();
         ArrayList<ColorF> laserColors = new ArrayList<ColorF>();
         computeLasers(laserSegments, laserColors);
 
         glSurface = new YalgGLSurface(this);
         setContentView(glSurface);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // Get the pointer ID
+        int activePointId = event.getPointerId(0);
+
+        // ... Many touch events later...
+
+        // Use the pointer ID to find the index of the active pointer
+        // and fetch its position
+        int pointerIndex = event.findPointerIndex(activePointId);
+        // Get the pointer's current position
+        float x = event.getX(pointerIndex);
+        float y = event.getY(pointerIndex);
+
+        Display display = getWindowManager().getDefaultDisplay();
+        x /= display.getWidth();
+        y /= display.getHeight();
+        x = x * 2 - 1;
+        y = 1.0f - (y * 2 - 1);
+
+        return false;
     }
 }

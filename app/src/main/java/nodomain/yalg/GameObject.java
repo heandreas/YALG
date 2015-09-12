@@ -14,6 +14,8 @@ public abstract class GameObject {
     protected boolean m_IsActive = true;
     protected boolean m_MustBeActiveForWinning = false;
 
+    protected boolean m_IsMovable = false;
+
     protected String m_TextureName;
 
     public String getTextureName() {
