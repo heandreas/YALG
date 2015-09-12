@@ -11,34 +11,29 @@ public abstract class GameObject {
     protected PointF m_Position = new PointF(0, 0);
     protected PointF m_Direction = new PointF(1, 0);
 
+    protected PointF m_Extents = new PointF(0, 0);
+
     protected boolean m_IsActive = true;
     protected boolean m_MustBeActiveForWinning = false;
 
+    protected boolean m_IsMovable = false;
+
     protected String m_TextureName;
 
-    public String getTextureName() {
-        return m_TextureName;
-    }
+    public String getTextureName() { return m_TextureName; }
 
-    public void setTextureName(String textureName) {
-        m_TextureName = textureName;
-    }
+    public void setTextureName(String textureName) { m_TextureName = textureName; }
 
-    public boolean getIsActive() {
-        return m_IsActive;
-    }
+    public boolean getIsMovable() { return m_IsMovable; }
+    public void setIsMovable(boolean isMovable) { m_IsMovable = isMovable; }
 
+    public boolean getIsActive() { return m_IsActive; }
     public void setIsActive(boolean isActive) {
         m_IsActive = isActive;
     }
 
-    public boolean getMustBeActiveForWinning() {
-        return m_MustBeActiveForWinning;
-    }
-
-    public void setMustBeActiveForWinning(boolean mustBeActiveForWinning) {
-        m_MustBeActiveForWinning = mustBeActiveForWinning;
-    }
+    public boolean getMustBeActiveForWinning() { return m_MustBeActiveForWinning; }
+    public void setMustBeActiveForWinning(boolean mustBeActiveForWinning) { m_MustBeActiveForWinning = mustBeActiveForWinning; }
 
     public void setPosition(PointF position) {
         m_Position = position;
@@ -53,6 +48,13 @@ public abstract class GameObject {
     }
     PointF getDirection() {
         return m_Direction;
+    }
+
+    public void setExtents(PointF extents) {
+        m_Extents = extents;
+    }
+    PointF getExtents() {
+        return m_Extents;
     }
 
     public void getRefractors(ArrayList<PointF> lineSegments, ArrayList<Float> coefficients) {}

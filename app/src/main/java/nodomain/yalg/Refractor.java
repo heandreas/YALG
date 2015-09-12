@@ -25,6 +25,8 @@ public class Refractor extends GameObject {
 
     public void addMeshPoint(PointF point) {
         points.add(point);
+        m_Extents.x = Math.max(m_Extents.x, point.x);
+        m_Extents.y = Math.max(m_Extents.y, point.y);
     }
 
     public void getRefractors(ArrayList<PointF> lineSegments, ArrayList<Float> coefficients) {

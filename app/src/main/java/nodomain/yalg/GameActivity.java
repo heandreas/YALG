@@ -4,10 +4,13 @@ import nodomain.yalg.util.SystemUiHider;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.view.MotionEventCompat;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.opengl.GLSurfaceView;
@@ -29,6 +32,8 @@ public class GameActivity extends Activity {
     YalgGLSurface glSurface;
 
     private List<GameObject> gameObjects = null;
+
+    GameObject selectedObject = null;
 
     public void computeLasers(List<PointF> laserSegments, List<ColorF> laserColors) {
         if (gameObjects == null)
@@ -53,10 +58,11 @@ public class GameActivity extends Activity {
         {
             LaserTracer.Result result = LaserTracer.traceRecursion(origins.get(i), dirs.get(i),
                     1.0f, lineSegmentsArray, coefficientsArray, 0);
-            for (int j = 0; j < result.lineSegments.size(); j++) {
+            for (int j = 0; j < result.lineSegments.size(); j++)
                 laserSegments.add(result.lineSegments.get(j));
-                if (j % 2 == 0)
-                    laserColors.add(new ColorF(0, 1, 0));
+            for (int j = 0; j < result.intensities.size(); j++) {
+                float intensity = result.intensities.get(j);
+                laserColors.add(new ColorF(0, intensity, 0));
             }
         }
 
@@ -83,12 +89,59 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
 
-        // TODO: remove debug call
         ArrayList<PointF> laserSegments = new ArrayList<PointF>();
         ArrayList<ColorF> laserColors = new ArrayList<ColorF>();
         computeLasers(laserSegments, laserColors);
 
         glSurface = new YalgGLSurface(this);
         setContentView(glSurface);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        // Get the pointer ID
+        int activePointId = event.getPointerId(0);
+
+        // ... Many touch events later...
+
+        // Use the pointer ID to find the index of the active pointer
+        // and fetch its position
+        int pointerIndex = event.findPointerIndex(activePointId);
+        // Get the pointer's current position
+        float x = event.getX(pointerIndex);
+        float y = event.getY(pointerIndex);
+
+        Display display = getWindowManager().getDefaultDisplay();
+        x /= display.getWidth();
+        y /= display.getHeight();
+        x = x * 2 - 1;
+        y = (1.0f - y) * 2 - 1;
+
+        int action = MotionEventCompat.getActionMasked(event);
+
+        if (action == MotionEvent.ACTION_UP) {
+            selectedObject = null;
+            return true;
+        }
+        else if (action == MotionEvent.ACTION_DOWN) {
+            for (GameObject go : gameObjects) {
+                if (go.getIsMovable()) {
+                    PointF pos = go.getPosition();
+                    PointF extents = go.getExtents();
+                    if (x > pos.x - extents.x && x < pos.x + extents.x
+                            && y > pos.y - extents.y && y < pos.y + extents.y) {
+                        selectedObject = go;
+                        break;
+                    }
+                }
+            }
+            return true;
+        }
+        else if (action == MotionEvent.ACTION_MOVE) {
+            if (selectedObject != null)
+                selectedObject.setPosition(new PointF(x, y));
+        }
+
+        return false;
     }
 }
