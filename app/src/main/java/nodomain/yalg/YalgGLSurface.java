@@ -46,7 +46,7 @@ public class YalgGLSurface extends GLSurfaceView {
             public void onSurfaceCreated(GL10 gl, EGLConfig config) {
                 System.out.println("GL Surface created.");
 
-                GLES20.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+                GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
                 laserRenderer = new LaserRenderer();
                 /*List<PointF> lines = new ArrayList<PointF>();
                 lines.add(new PointF(0, 0));
