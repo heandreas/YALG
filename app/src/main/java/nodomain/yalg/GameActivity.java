@@ -55,10 +55,11 @@ public class GameActivity extends Activity {
         {
             LaserTracer.Result result = LaserTracer.traceRecursion(origins.get(i), dirs.get(i),
                     1.0f, lineSegmentsArray, coefficientsArray, 0);
-            for (int j = 0; j < result.lineSegments.size(); j++) {
+            for (int j = 0; j < result.lineSegments.size(); j++)
                 laserSegments.add(result.lineSegments.get(j));
-                if (j % 2 == 0)
-                    laserColors.add(new ColorF(0, 1, 0));
+            for (int j = 0; j < result.intensities.size(); j++) {
+                float intensity = result.intensities.get(j);
+                laserColors.add(new ColorF(0, intensity, 0));
             }
         }
 
