@@ -11,6 +11,7 @@
         <position x="-0.3" y="-0.1" />
         <orientation x="1" y="0"/>
         <texture file="prism.png"/>
+        <movable/>
 
         <mesh>
             <position x="-0.4" y="-0.2" />

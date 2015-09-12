@@ -9,6 +9,7 @@ import android.graphics.PointF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.view.MotionEventCompat;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,6 +32,8 @@ public class GameActivity extends Activity {
     YalgGLSurface glSurface;
 
     private List<GameObject> gameObjects = null;
+
+    GameObject selectedObject = null;
 
     public void computeLasers(List<PointF> laserSegments, List<ColorF> laserColors) {
         if (gameObjects == null)
@@ -112,7 +115,32 @@ public class GameActivity extends Activity {
         x /= display.getWidth();
         y /= display.getHeight();
         x = x * 2 - 1;
-        y = 1.0f - (y * 2 - 1);
+        y = (1.0f - y) * 2 - 1;
+
+        int action = MotionEventCompat.getActionMasked(event);
+
+        if (action == MotionEvent.ACTION_UP) {
+            selectedObject = null;
+            return true;
+        }
+        else if (action == MotionEvent.ACTION_DOWN) {
+            for (GameObject go : gameObjects) {
+                if (go.getIsMovable()) {
+                    PointF pos = go.getPosition();
+                    PointF extents = go.getExtents();
+                    if (x > pos.x - extents.x && x < pos.x + extents.x
+                            && y > pos.y - extents.y && y < pos.y + extents.y) {
+                        selectedObject = go;
+                        break;
+                    }
+                }
+            }
+            return true;
+        }
+        else if (action == MotionEvent.ACTION_MOVE) {
+            if (selectedObject != null)
+                selectedObject.setPosition(new PointF(x, y));
+        }
 
         return false;
     }
