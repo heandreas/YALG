@@ -37,11 +37,11 @@ public class LaserTracer {
 
     //geometry as line segments (two per line segment)
     public static Result
-    traceRecursion(PointF vLaserSource, PointF vLaserDir, float fIntensity, PointF[] geometry, float[] afRefractiveIndices){
+    traceRecursion(PointF vLaserSource, PointF vLaserDir, float fIntensity, PointF[] geometry, float[] afRefractiveIndices, int iRecursionDepth){
         List<PointF> lOutLines = new ArrayList<PointF>();
         List<Float> lOutIntensities = new ArrayList<Float>();
 
-        if(fIntensity < 0.05f) {
+        if(fIntensity < 0.05f || iRecursionDepth > 20) {
             Result res = new Result();
             res.intensities = lOutIntensities;
             res.lineSegments = lOutLines;
@@ -138,14 +138,14 @@ public class LaserTracer {
             lOutLines.add(vIntersection);
 
             //continue with recursion, reflection
-            Result res = traceRecursion(vIntersection, vReflected, fReflected * fIntensity, geometry, afRefractiveIndices);
+            Result res = traceRecursion(vIntersection, vReflected, fReflected * fIntensity, geometry, afRefractiveIndices, iRecursionDepth+1);
             //merge results
             lOutLines.addAll(res.lineSegments);
             lOutIntensities.addAll(res.intensities);
 
             //continue with recursion, refraction
             if(!bTotalReflection) {
-                res = traceRecursion(vIntersection, vRefracted, fRefracted * fIntensity, geometry, afRefractiveIndices);
+                res = traceRecursion(vIntersection, vRefracted, fRefracted * fIntensity, geometry, afRefractiveIndices, iRecursionDepth+1);
                 //merge results
                 lOutLines.addAll(res.lineSegments);
                 lOutIntensities.addAll(res.intensities);

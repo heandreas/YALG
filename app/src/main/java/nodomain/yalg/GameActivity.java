@@ -52,7 +52,7 @@ public class GameActivity extends Activity {
         for (int i = 0; i < origins.size(); i++)
         {
             LaserTracer.Result result = LaserTracer.traceRecursion(origins.get(i), dirs.get(i),
-                    1.0f, lineSegmentsArray, coefficientsArray);
+                    1.0f, lineSegmentsArray, coefficientsArray, 0);
             for (int j = 0; j < result.lineSegments.size(); j++) {
                 laserSegments.add(result.lineSegments.get(j));
                 if (j % 2 == 0)
@@ -83,6 +83,7 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
 
+        // TODO: remove debug call
         ArrayList<PointF> laserSegments = new ArrayList<PointF>();
         ArrayList<ColorF> laserColors = new ArrayList<ColorF>();
         computeLasers(laserSegments, laserColors);
