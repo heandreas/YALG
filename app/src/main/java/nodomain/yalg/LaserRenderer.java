@@ -22,6 +22,8 @@ public class LaserRenderer {
     static final int BYTES_PER_FLOAT = 4;
     static final float LASER_WIDTH = 0.01f;
 
+    private float m_fTime;
+
     private final String vertexShaderCode =
                     "attribute vec3 vPosition;" +
                     "attribute vec3 vColor;" +
@@ -80,6 +82,8 @@ public class LaserRenderer {
 
         // creates OpenGL ES program executables
         GLES20.glLinkProgram(m_Program);
+
+        m_fTime = 0;
     }
 
     static void writePosToBuffer(PointF pos, ColorF color, int offset, float[] buffer)
@@ -131,8 +135,10 @@ public class LaserRenderer {
         GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertexBuffer.capacity() * BYTES_PER_FLOAT, vertexBuffer, GLES20.GL_STATIC_DRAW);
     }
 
-    public void render()
+    public void render(float fDeltaTime)
     {
+        m_fTime += fDeltaTime;
+
         GLES20.glUseProgram(m_Program);
 
         // get handle to vertex shader's vPosition member

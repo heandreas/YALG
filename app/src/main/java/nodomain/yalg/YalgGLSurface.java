@@ -23,15 +23,17 @@ public class YalgGLSurface extends GLSurfaceView {
 
     GameActivity gameActivity;
 
+    //last frame time
+    long m_iLastTime;
 
-    void renderFrame() {
+    void renderFrame(float fDeltaTime) {
         ArrayList<PointF> laserSegments = new ArrayList<PointF>();
         ArrayList<ColorF> laserColors = new ArrayList<ColorF>();
 
         gameActivity.computeLasers(laserSegments, laserColors);
 
         laserRenderer.setLasers(laserSegments, laserColors);
-        laserRenderer.render();
+        laserRenderer.render(fDeltaTime);
     }
 
     public YalgGLSurface(GameActivity gameActivity) {
@@ -48,6 +50,8 @@ public class YalgGLSurface extends GLSurfaceView {
 
                 GLES20.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
                 laserRenderer = new LaserRenderer();
+
+                m_iLastTime = System.nanoTime();
                 /*List<PointF> lines = new ArrayList<PointF>();
                 lines.add(new PointF(0, 0));
                 lines.add(new PointF(1, 1));
@@ -65,7 +69,10 @@ public class YalgGLSurface extends GLSurfaceView {
             public void onDrawFrame(GL10 gl) {
                 GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-                renderFrame();
+                float fDeltaTime = (System.nanoTime()-m_iLastTime) * 1e-9f;
+                m_iLastTime = System.nanoTime();
+
+                renderFrame(fDeltaTime);
 
                 /*PointF[] obstacles = {new PointF(-0.4f, 0.2f), new PointF(-0.5f, 0.0f)};
                 float[] coefficients = {1.5f};
