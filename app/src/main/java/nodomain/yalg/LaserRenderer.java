@@ -13,9 +13,9 @@ import java.util.Vector;
  * Created by andreas on 10.09.2015.
  */
 public class LaserRenderer {
-    private final int m_VBO;
+    final int m_VBO;
 
-    private final int m_Program;
+    final int m_Program;
 
     private int m_NumVertices;
 
@@ -30,10 +30,13 @@ public class LaserRenderer {
                     "attribute vec3 vPosition;" +
                     "attribute vec3 vColor;" +
                     "attribute vec3 vUV;" +
+                     "uniform vec2 windowSize;" +
                     "varying vec3 col;" +
                     "varying vec3 uv;" +
                     "void main() {" +
-                    "  gl_Position = vec4(vPosition, 1);" +
+                    "  float aspectRatio = windowSize.x / windowSize.y;" +
+                    "  vec3 pos = vec3(vPosition.x, vPosition.y * aspectRatio, vPosition.z);" +
+                    "  gl_Position = vec4(pos, 1.0);" +
                     "  col = vColor;" +
                     "  uv = vUV;" +
                     "}";
@@ -159,7 +162,7 @@ public class LaserRenderer {
 
     public void render(float fDeltaTime)
     {
-        final float fTimeOverflow = 1000.0f;
+        final float fTimeOverflow = 10.0f;
         m_fTime += fDeltaTime;
         if(m_fTime > fTimeOverflow)
             m_fTime -= fTimeOverflow;

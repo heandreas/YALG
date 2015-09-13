@@ -29,9 +29,12 @@ public class YalgGLSurface extends GLSurfaceView {
     private final String default_VS =
             "attribute vec3 vPosition;" +
                     "attribute vec2 vUV;" +
+                    "uniform vec2 windowSize;" +
                     "varying vec2 uv;" +
                     "void main() {" +
-                    "  gl_Position = vec4(vPosition, 1.0);" +
+                    "  float aspectRatio = windowSize.x / windowSize.y;" +
+                    "  vec3 pos = vec3(vPosition.x, vPosition.y * aspectRatio, vPosition.z);" +
+                    "  gl_Position = vec4(pos, 1.0);" +
                     "  uv = vec2(vUV.x, 1.0 - vUV.y);" +
                     "}";
 
@@ -57,6 +60,12 @@ public class YalgGLSurface extends GLSurfaceView {
         GLES20.glCompileShader(shader);
 
         return shader;
+    }
+
+    static void setSizeUniform(int program, float width, float height) {
+        int sizeHandle = GLES20.glGetUniformLocation(program, "windowSize");
+        GLES20.glUseProgram(program);
+        GLES20.glUniform2f(sizeHandle, width, height);
     }
 
     void renderFrame(float fDeltaTime) {
@@ -123,6 +132,9 @@ public class YalgGLSurface extends GLSurfaceView {
                 System.out.println("GL Surface changed.");
 
                 GLES20.glViewport(0, 0, width, height);
+
+                setSizeUniform(m_DefaultProgram, width, height);
+                setSizeUniform(laserRenderer.m_Program, width, height);
             }
 
             @Override
