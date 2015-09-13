@@ -43,7 +43,7 @@ public class LaserTracer {
 
     //geometry as line segments (two per line segment)
     public static Result
-    traceRecursion(PointF vLaserSource, PointF vLaserDir, float fRefractionMultiplier, PointF[] geometry, float[] afRefractiveIndices, int iRecursionDepth, float fIntensity, float fFlightLength){
+    traceRecursion(PointF vLaserSource, PointF vLaserDir, float fRefractionMultiplier, PointF[] geometry, float[] afRefractiveIndices, float fIntensity, int iRecursionDepth, float fFlightLength){
 
         Result res = new Result();
         //init return lists
@@ -169,7 +169,7 @@ public class LaserTracer {
 
 
             //continue with recursion, reflection
-            Result resReflection = traceRecursion(vIntersection, vReflected, fRefractionMultiplier, geometry, afRefractiveIndices, iRecursionDepth+1, fReflected * fIntensity, fNextLength);
+            Result resReflection = traceRecursion(vIntersection, vReflected, fRefractionMultiplier, geometry, afRefractiveIndices, fReflected * fIntensity, iRecursionDepth+1, fNextLength);
             //merge results
             res.lineSegments.addAll(resReflection.lineSegments);
             res.intensities.addAll(resReflection.intensities);
@@ -179,7 +179,7 @@ public class LaserTracer {
 
             //continue with recursion, refraction
             if(!bTotalReflection) {
-                Result resRefraction = traceRecursion(vIntersection, vRefracted, fRefractionMultiplier, geometry, afRefractiveIndices, iRecursionDepth+1, fRefracted * fIntensity, fNextLength);
+                Result resRefraction = traceRecursion(vIntersection, vRefracted, fRefractionMultiplier, geometry, afRefractiveIndices, fRefracted * fIntensity, iRecursionDepth+1, fNextLength);
                 //merge results
                 res.lineSegments.addAll(resRefraction.lineSegments);
                 res.intensities.addAll(resRefraction.intensities);
@@ -194,7 +194,7 @@ public class LaserTracer {
     //method for outside callers
     //occludes iteration setup
     public static Result
-    traceRecursion(PointF vLaserSource, PointF vLaserDir, float fRefractionMultiplier, PointF[] geometry, float[] afRefractiveIndices){
-        return traceRecursion(vLaserSource, vLaserDir, fRefractionMultiplier, geometry, afRefractiveIndices, 0, 1.0f, 0.0f);
+    traceRecursion(PointF vLaserSource, PointF vLaserDir, float fRefractionMultiplier, PointF[] geometry, float[] afRefractiveIndices, float fIntensity){
+        return traceRecursion(vLaserSource, vLaserDir, fRefractionMultiplier, geometry, afRefractiveIndices, fIntensity, 0, 0.0f);
     }
 }

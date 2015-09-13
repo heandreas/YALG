@@ -85,7 +85,7 @@ public class GameObject {
     }
 
     public void getRefractors(ArrayList<PointF> lineSegments, ArrayList<Float> coefficients) {}
-    public void getRays(ArrayList<PointF> origins, ArrayList<PointF> dirs) {}
+    public void getRay(PointF origin, PointF dir) {}
 
     private int m_VBO = -1;
 
