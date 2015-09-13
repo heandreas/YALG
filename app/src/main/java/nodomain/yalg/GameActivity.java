@@ -104,6 +104,8 @@ public class GameActivity extends Activity {
         ArrayList<ColorF> laserColors = new ArrayList<ColorF>();
         computeLasers(laserSegments, laserColors);
 
+        TextureFactory.getInstance().setGameActivity(this);
+
         glSurface = new YalgGLSurface(this);
         setContentView(glSurface);
     }

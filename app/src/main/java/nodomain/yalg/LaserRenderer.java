@@ -161,5 +161,6 @@ public class LaserRenderer {
 
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(posHandle);
+        GLES20.glDisableVertexAttribArray(colorHandle);
     }
 }

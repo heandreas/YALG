@@ -23,15 +23,62 @@ public class YalgGLSurface extends GLSurfaceView {
 
     GameActivity gameActivity;
 
+    private final String default_VS =
+            "attribute vec3 vPosition;" +
+                    "attribute vec2 vUV;" +
+                    "varying vec2 uv;" +
+                    "void main() {" +
+                    "  gl_Position = vec4(vPosition, 1);" +
+                    "  uv = vUV;" +
+                    "}";
+
+    private final String default_FS =
+            "precision mediump float;" +
+            "uniform sampler2D texture;" +
+                    "varying vec2 uv;" +
+                    "void main() {" +
+                    "  gl_FragColor = texture2D(texture, uv);" +
+                    "}";
+
+    private int m_DefaultProgram;
+
+
+    public static int loadShader(int type, String shaderCode) {
+        int shader = GLES20.glCreateShader(type);
+
+        // add the source code to the shader and compile it
+        GLES20.glShaderSource(shader, shaderCode);
+        GLES20.glCompileShader(shader);
+
+        return shader;
+    }
 
     void renderFrame() {
         ArrayList<PointF> laserSegments = new ArrayList<PointF>();
         ArrayList<ColorF> laserColors = new ArrayList<ColorF>();
 
+        GLES20.glUseProgram(m_DefaultProgram);
+
+        int posHandle = GLES20.glGetAttribLocation(m_DefaultProgram, "vPosition");
+        int uvHandle = GLES20.glGetAttribLocation(m_DefaultProgram, "vUV");
+        int textureHandle = GLES20.glGetUniformLocation(m_DefaultProgram, "texture");
+
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glUniform1i(textureHandle, 0);
+
+        for (GameObject go : gameActivity.gameObjects) {
+            go.render(posHandle, uvHandle);
+        }
+
+        GLES20.glDisableVertexAttribArray(posHandle);
+        GLES20.glDisableVertexAttribArray(uvHandle);
+
         gameActivity.computeLasers(laserSegments, laserColors);
 
         laserRenderer.setLasers(laserSegments, laserColors);
         laserRenderer.render();
+
+
     }
 
     public YalgGLSurface(GameActivity gameActivity) {
@@ -44,14 +91,21 @@ public class YalgGLSurface extends GLSurfaceView {
         setRenderer(new Renderer() {
             @Override
             public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-                System.out.println("GL Surface created.");
+
+                TextureFactory.getInstance().loadTextures();
 
                 GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
                 laserRenderer = new LaserRenderer();
-                /*List<PointF> lines = new ArrayList<PointF>();
-                lines.add(new PointF(0, 0));
-                lines.add(new PointF(1, 1));
-                m_LaserRenderer.setLasers(lines);*/
+
+                int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER,
+                        default_VS);
+                int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER,
+                        default_FS);
+
+                m_DefaultProgram = GLES20.glCreateProgram();
+                GLES20.glAttachShader(m_DefaultProgram, vertexShader);
+                GLES20.glAttachShader(m_DefaultProgram, fragmentShader);
+                GLES20.glLinkProgram(m_DefaultProgram);
             }
 
             @Override
@@ -66,12 +120,6 @@ public class YalgGLSurface extends GLSurfaceView {
                 GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
                 renderFrame();
-
-                /*PointF[] obstacles = {new PointF(-0.4f, 0.2f), new PointF(-0.5f, 0.0f)};
-                float[] coefficients = {1.5f};
-                LaserTracer.Result result = LaserTracer.traceRecursion(new PointF(0.1f, 0.1f), new PointF(-1.0f, 0.0f), 1.0f, obstacles, coefficients);
-                laserRenderer.setLasers(result.lineSegments);
-                laserRenderer.render();*/
             }
         });
     }
