@@ -37,4 +37,21 @@
 
         <refraction index="1.5" />
     </gameobject>
+
+    <gameobject type="refractor" id="block-1">
+        <position x="0.3" y=".8" />
+        <orientation x="1" y="0"/>
+        <texture file="block"/>
+
+        <extents x = "0.2" y = "0.2"/>
+
+        <mesh normalizer = "128">
+            <position x="8" y="118" />
+            <position x="118" y="118" />
+            <position x="118" y="8" />
+            <position x="8" y="8" />
+        </mesh>
+
+        <refraction index="-1" />
+    </gameobject>
 </level>
