@@ -50,12 +50,18 @@ public class GameActivity extends Activity {
             return;
 
         ArrayList<PointF> obstacleLines = new ArrayList<PointF>();
+        ArrayList<Integer> obstacleObjectIndices = new ArrayList<Integer>();
         ArrayList<Float> coefficients = new ArrayList<Float>();
         ArrayList<PointF> origins = new ArrayList<PointF>();
         ArrayList<PointF> dirs = new ArrayList<PointF>();
-        for (GameObject go : gameObjects) {
+        for (int i = 0; i < gameObjects.size(); i++) {
+            GameObject go = gameObjects.get(i);
+            int numVerticesOld = obstacleLines.size();
             go.getRefractors(obstacleLines, coefficients);
             go.getRays(origins, dirs);
+            int numAddedSegments = (obstacleLines.size() - numVerticesOld) / 2;
+            for (int j = 0; j < numAddedSegments; j++)
+                obstacleObjectIndices.add(i);
         }
         PointF[] lineSegmentsArray = new PointF[obstacleLines.size()];
         for (int i = 0; i < obstacleLines.size(); i++)
@@ -76,6 +82,15 @@ public class GameActivity extends Activity {
             for (int j = 0; j < result.intensities.size(); j++) {
                 float intensity = result.intensities.get(j);
                 laserColors.add(new ColorF(0, intensity, 0));
+            }
+
+            for (int j = 0; j < result.hitSegments.size(); j++) {
+                int segmentIndex = result.hitSegments.get(j);
+                int objectIndex = obstacleObjectIndices.get(segmentIndex);
+                GameObject go = gameObjects.get(objectIndex);
+                if (go instanceof Receptor) {
+                    System.out.println("Laser hits receptor!");
+                }
             }
         }
     }

@@ -27,7 +27,7 @@
         <texture file="prism"/>
         <movable/>
 
-        <extents x = "0.3" y = "0.3"/>
+        <extents x = "0.4" y = "0.4"/>
 
         <mesh normalizer = "256">
             <position x="9" y="232" />
