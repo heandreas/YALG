@@ -35,34 +35,35 @@ public class LaserTracer {
         public List<Float> intensities;
         //two flight lengths per segment
         public List<Float> lightLengths;
+        //intensities of hits
+        public List<Float> hitIntensities;
+        //segments of hits
+        public List<Integer> hitSegments;
     }
 
     //geometry as line segments (two per line segment)
     public static Result
     traceRecursion(PointF vLaserSource, PointF vLaserDir, float fRefractionMultiplier, PointF[] geometry, float[] afRefractiveIndices, int iRecursionDepth, float fIntensity, float fFlightLength){
 
+        Result res = new Result();
         //init return lists
-        List<PointF> lOutLines = new ArrayList<PointF>();
-        List<Float> lOutIntensities = new ArrayList<Float>();
-        List<Float> lOutLengths = new ArrayList<Float>();
+        res.lineSegments = new ArrayList<>();
+        res.intensities = new ArrayList<>();
+        res.lightLengths = new ArrayList<>();
+        res.hitIntensities = new ArrayList<>();
+        res.hitSegments = new ArrayList<>();
 
         //important for angle calculation
         Vec2D.normalize(vLaserDir);
 
         //recursion limiter
-        if(fIntensity < 0.05f || iRecursionDepth > 20) {
-            Result res = new Result();
-            res.intensities = lOutIntensities;
-            res.lineSegments = lOutLines;
-            res.lightLengths = lOutLengths;
-
+        if(fIntensity < 0.05f || iRecursionDepth > 20)
             return res;
-        }
 
         //populate output structure
-        lOutLines.add(vLaserSource);
-        lOutIntensities.add(fIntensity);
-        lOutLengths.add(fFlightLength);
+        res.lineSegments.add(vLaserSource);
+        res.intensities.add(fIntensity);
+        res.lightLengths.add(fFlightLength);
 
         //initialize to infinity
         float fNearestHit = Float.MAX_VALUE;
@@ -95,8 +96,8 @@ public class LaserTracer {
         {
             //bigger than screen
             final float fInfLength = 3.0f;
-            lOutLines.add(Vec2D.add(vLaserSource, Vec2D.mul(fInfLength, vLaserDir)) );
-            lOutLengths.add(fFlightLength + fInfLength);
+            res.lineSegments.add(Vec2D.add(vLaserSource, Vec2D.mul(fInfLength, vLaserDir)) );
+            res.lightLengths.add(fFlightLength + fInfLength);
         }
         else
         {
@@ -104,6 +105,9 @@ public class LaserTracer {
             //first re-evaluate
             PointF line0 = geometry[iHitIndex*2];
             PointF line1 = geometry[iHitIndex*2 + 1];
+
+            res.hitSegments.add(iHitIndex);
+            res.hitIntensities.add(fIntensity);
 
             //calculate normalized surface normal
             PointF vLine = Vec2D.subtract(line1, line0);
@@ -156,33 +160,30 @@ public class LaserTracer {
             float fReflected = 1.0f - fRefracted;
 
             //spam line end
-            lOutLines.add(vIntersection);
+            res.lineSegments.add(vIntersection);
             float fNextLength = fFlightLength + fNearestHit;
-            lOutLengths.add(fNextLength);
+            res.lightLengths.add(fNextLength);
 
             //continue with recursion, reflection
-            Result res = traceRecursion(vIntersection, vReflected, fRefractionMultiplier, geometry, afRefractiveIndices, iRecursionDepth+1, fReflected * fIntensity, fNextLength);
+            Result resReflection = traceRecursion(vIntersection, vReflected, fRefractionMultiplier, geometry, afRefractiveIndices, iRecursionDepth+1, fReflected * fIntensity, fNextLength);
             //merge results
-            lOutLines.addAll(res.lineSegments);
-            lOutIntensities.addAll(res.intensities);
-            lOutLengths.addAll(res.lightLengths);
+            res.lineSegments.addAll(resReflection.lineSegments);
+            res.intensities.addAll(resReflection.intensities);
+            res.lightLengths.addAll(resReflection.lightLengths);
+            res.hitSegments.addAll(resReflection.hitSegments);
+            res.hitIntensities.addAll(resReflection.hitIntensities);
 
             //continue with recursion, refraction
             if(!bTotalReflection) {
-                res = traceRecursion(vIntersection, vRefracted, fRefractionMultiplier, geometry, afRefractiveIndices, iRecursionDepth+1, fRefracted * fIntensity, fNextLength);
+                Result resRefraction = traceRecursion(vIntersection, vRefracted, fRefractionMultiplier, geometry, afRefractiveIndices, iRecursionDepth+1, fRefracted * fIntensity, fNextLength);
                 //merge results
-                lOutLines.addAll(res.lineSegments);
-                lOutIntensities.addAll(res.intensities);
-                lOutLengths.addAll(res.lightLengths);
+                res.lineSegments.addAll(resRefraction.lineSegments);
+                res.intensities.addAll(resRefraction.intensities);
+                res.lightLengths.addAll(resRefraction.lightLengths);
+                res.hitSegments.addAll(resRefraction.hitSegments);
+                res.hitIntensities.addAll(resRefraction.hitIntensities);
             }
         }
-
-        //assemble result
-        Result res = new Result();
-        res.intensities = lOutIntensities;
-        res.lineSegments = lOutLines;
-        res.lightLengths = lOutLengths;
-
         return res;
     }
 
