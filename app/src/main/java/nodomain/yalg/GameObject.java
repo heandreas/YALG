@@ -141,8 +141,15 @@ public class GameObject {
 
         GLES20.glUniform3f(laserColHandle, m_Color.getRed(), m_Color.getGreen(), m_Color.getBlue());
 
+        //enable alpha blending
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
         // Draw the triangles.
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 6);
+
+        //turn off alpha blending again.
+        GLES20.glDisable(GLES20.GL_BLEND);
     }
 
 }
