@@ -31,8 +31,8 @@ public class YalgGLSurface extends GLSurfaceView {
                     "attribute vec2 vUV;" +
                     "varying vec2 uv;" +
                     "void main() {" +
-                    "  gl_Position = vec4(vPosition, 1);" +
-                    "  uv = vec2(vUV.x, 1 - vUV.y);" +
+                    "  gl_Position = vec4(vPosition, 1.0);" +
+                    "  uv = vec2(vUV.x, 1.0 - vUV.y);" +
                     "}";
 
     private final String default_FS =
@@ -41,12 +41,10 @@ public class YalgGLSurface extends GLSurfaceView {
                     "uniform vec3 colLaser;" +
                     "varying vec2 uv;" +
                     "void main() {" +
-                    //"  vec4 texcolor = texture2D(texture, uv);" +
-                    //"  vec3 laserBlend = colLaser * texcolor.r" +
-                    //"  vec3 colorBlend = vec3(1,1,1) * (texcolor.g)" +
-                    //"  gl_FragColor = vec4(laserBlend + colorBlend, texcolor.a)" +
-                    //"  gl_FragColor = texcolor;" +
-                    "  gl_FragColor = texture2D(texture, uv);" +
+                    "  vec4 texcolor = texture2D(texture, uv);" +
+                    "  vec3 laserBlend = colLaser * texcolor.r;" +
+                    "  vec3 colorBlend = vec3(1.0, 1.0, 1.0) * (texcolor.g);" +
+                    "  gl_FragColor = vec4(laserBlend + colorBlend, texcolor.a);" +
                     "}";
 
     private int m_DefaultProgram;
