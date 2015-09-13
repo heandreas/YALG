@@ -156,6 +156,9 @@ public class GameActivity extends Activity {
         point.x = point.x * 2 - 1;
         point.y = (1.0f - point.y) * 2 - 1;
 
+        float aspectRatioInv = (float)display.getHeight() / (float)display.getWidth();
+        point.y *= aspectRatioInv;
+
         return point;
     }
 
