@@ -52,13 +52,25 @@ public class GameActivity extends Activity {
         ArrayList<PointF> obstacleLines = new ArrayList<PointF>();
         ArrayList<Integer> obstacleObjectIndices = new ArrayList<Integer>();
         ArrayList<Float> coefficients = new ArrayList<Float>();
-        ArrayList<PointF> origins = new ArrayList<PointF>();
-        ArrayList<PointF> dirs = new ArrayList<PointF>();
+
+        ArrayList<PointF> lLaserOrigins = new ArrayList<PointF>();
+        ArrayList<PointF> lLaserDirs = new ArrayList<PointF>();
+        ArrayList<ColorF> lLaserColors = new ArrayList<ColorF>();
+
+
         for (int i = 0; i < gameObjects.size(); i++) {
             GameObject go = gameObjects.get(i);
             int numVerticesOld = obstacleLines.size();
             go.getRefractors(obstacleLines, coefficients);
-            go.getRays(origins, dirs);
+
+            PointF origin = new PointF();
+            PointF dir = new PointF();
+
+            go.getRay(origin, dir);
+            lLaserOrigins.add(origin);
+            lLaserDirs.add(dir);
+            lLaserColors.add(go.getColor());
+
             int numAddedSegments = (obstacleLines.size() - numVerticesOld) / 2;
             for (int j = 0; j < numAddedSegments; j++)
                 obstacleObjectIndices.add(i);
@@ -75,27 +87,50 @@ public class GameActivity extends Activity {
         for (int i = 0; i < coefficients.size(); i++)
             coefficientsArray[i] = coefficients.get(i);
 
-        for (int i = 0; i < origins.size(); i++)
+        for (int i = 0; i < lLaserOrigins.size(); i++)
         {
-            LaserTracer.Result result = LaserTracer.traceRecursion(origins.get(i), dirs.get(i), 1.0f,
-                    lineSegmentsArray, coefficientsArray);
+            //trace every color of the laser
+            for(int iColor = 0; iColor < 3; iColor++) {
 
-            laserSegments.addAll(result.lineSegments);
+                float fRefractiveMultiplier = 0.98f + (float)iColor * 0.02f;
+                float fIntensity;
+                ColorF drawColor = new ColorF(0,0,0);
 
-            laserLengths.addAll(result.lightLengths);
+                if(iColor == 0) {
+                    fIntensity = lLaserColors.get(i).getRed();
+                    drawColor.setRed(fIntensity);
+                }
+                else if(iColor == 1) {
+                    fIntensity = lLaserColors.get(i).getGreen();
+                    drawColor.setGreen(fIntensity);
+                }
+                else{
+                    fIntensity = lLaserColors.get(i).getBlue();
+                    drawColor.setBlue(fIntensity);
+                }
 
-            for (int j = 0; j < result.intensities.size(); j++) {
-                float intensity = result.intensities.get(j);
-                laserColors.add(new ColorF(0, intensity, 0));
-            }
+                LaserTracer.Result result = LaserTracer.traceRecursion(lLaserOrigins.get(i), lLaserDirs.get(i), fRefractiveMultiplier,
+                        lineSegmentsArray, coefficientsArray, fIntensity);
 
-            for (int j = 0; j < result.hitSegments.size(); j++) {
-                int segmentIndex = result.hitSegments.get(j);
-                int objectIndex = obstacleObjectIndices.get(segmentIndex);
-                GameObject go = gameObjects.get(objectIndex);
-                if (go instanceof Receptor) {
-                    Receptor r = (Receptor)go;
-                    r.addGreen(result.hitIntensities.get(j));
+                laserSegments.addAll(result.lineSegments);
+
+                laserLengths.addAll(result.lightLengths);
+
+                for (int j = 0; j < result.intensities.size(); j++) {
+                    float intensity = result.intensities.get(j);
+                    laserColors.add(new ColorF(drawColor.getRed() * intensity,
+                                                drawColor.getGreen() * intensity,
+                                                drawColor.getBlue() * intensity) );
+                }
+
+                for (int j = 0; j < result.hitSegments.size(); j++) {
+                    int segmentIndex = result.hitSegments.get(j);
+                    int objectIndex = obstacleObjectIndices.get(segmentIndex);
+                    GameObject go = gameObjects.get(objectIndex);
+                    if (go instanceof Receptor) {
+                        Receptor r = (Receptor)go;
+                        r.addGreen(result.hitIntensities.get(j));
+                    }
                 }
             }
         }
