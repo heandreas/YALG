@@ -28,11 +28,12 @@ public class YalgGLSurface extends GLSurfaceView {
 
     void renderFrame(float fDeltaTime) {
         ArrayList<PointF> laserSegments = new ArrayList<PointF>();
+        ArrayList<Float> laserLengths = new ArrayList<>();
         ArrayList<ColorF> laserColors = new ArrayList<ColorF>();
 
-        gameActivity.computeLasers(laserSegments, laserColors);
+        gameActivity.computeLasers(laserSegments, laserLengths, laserColors);
 
-        laserRenderer.setLasers(laserSegments, laserColors);
+        laserRenderer.setLasers(laserSegments, laserLengths, laserColors);
         laserRenderer.render(fDeltaTime);
     }
 
@@ -43,6 +44,7 @@ public class YalgGLSurface extends GLSurfaceView {
 
         System.out.println("Setting EGL context.");
         setEGLContextClientVersion(2);
+
         setRenderer(new Renderer() {
             @Override
             public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -52,10 +54,6 @@ public class YalgGLSurface extends GLSurfaceView {
                 laserRenderer = new LaserRenderer();
 
                 m_iLastTime = System.nanoTime();
-                /*List<PointF> lines = new ArrayList<PointF>();
-                lines.add(new PointF(0, 0));
-                lines.add(new PointF(1, 1));
-                m_LaserRenderer.setLasers(lines);*/
             }
 
             @Override
@@ -73,12 +71,6 @@ public class YalgGLSurface extends GLSurfaceView {
                 m_iLastTime = System.nanoTime();
 
                 renderFrame(fDeltaTime);
-
-                /*PointF[] obstacles = {new PointF(-0.4f, 0.2f), new PointF(-0.5f, 0.0f)};
-                float[] coefficients = {1.5f};
-                LaserTracer.Result result = LaserTracer.traceRecursion(new PointF(0.1f, 0.1f), new PointF(-1.0f, 0.0f), 1.0f, obstacles, coefficients);
-                laserRenderer.setLasers(result.lineSegments);
-                laserRenderer.render();*/
             }
         });
     }
