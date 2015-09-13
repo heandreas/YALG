@@ -31,14 +31,19 @@ public class TextureFactory {
     private int primsaID;
     private int sensorID;
     private int spiegelID;
+    private int blockID;
+
     private int backgroundID;
     private int onePixelID;
+
+
 
     public void loadTextures() {
         laserID = loadTexture(R.raw.laser);
         primsaID = loadTexture(R.raw.prisma);
         sensorID = loadTexture(R.raw.sensor);
         spiegelID = loadTexture(R.raw.spiegel);
+        blockID = loadTexture(R.raw.block);
         backgroundID = loadTexture(R.raw.background);
         onePixelID = loadTexture(R.raw.onepx);
     }
@@ -52,6 +57,9 @@ public class TextureFactory {
             return sensorID;
         if (name.equals("mirror"))
             return spiegelID;
+        if (name.equals("block"))
+            return blockID;
+
         if (name.equals("background"))
             return backgroundID;
         if (name.equals("onepx"))
