@@ -20,6 +20,10 @@ public class Receptor extends Physical {
         statusBarRed.setTextureName("onepx");
         statusBarGreen.setTextureName("onepx");
         statusBarBlue.setTextureName("onepx");
+
+        statusBarRed.setColor(new ColorF(1, 0, 0));
+        statusBarGreen.setColor(new ColorF(0, 1, 0));
+        statusBarBlue.setColor(new ColorF(0, 0, 1));
     }
 
     public void render(int posHandle, int uvHandle, int laserColHandle) {
@@ -33,9 +37,16 @@ public class Receptor extends Physical {
         statusBarGreen.setExtents(barExtents);
         statusBarBlue.setExtents(barExtents);
 
-        statusBarRed.setPosition(minPos);
+        float yPos = minPos.y;
+        statusBarRed.setPosition(minPos.x, yPos);
+        yPos += scale.y * BAR_HEIGHT;
+        statusBarGreen.setPosition(minPos.x, yPos);
+        yPos += scale.y * BAR_HEIGHT;
+        statusBarBlue.setPosition(minPos.x, yPos);
 
         statusBarRed.render(posHandle, uvHandle, laserColHandle);
+        statusBarGreen.render(posHandle, uvHandle, laserColHandle);
+        statusBarBlue.render(posHandle, uvHandle, laserColHandle);
 
         super.render(posHandle, uvHandle, laserColHandle);
     }
