@@ -15,6 +15,14 @@ import java.util.ArrayList;
 public class GameObject {
     ColorF m_Color = new ColorF(1.0f, 1.0f, 1.0f);
 
+    void setColor(ColorF color) {
+        m_Color = color;
+    }
+
+    ColorF getColor() {
+        return m_Color;
+    }
+
     protected PointF m_Position = new PointF(0, 0);
     protected PointF m_Rotation = new PointF(1, 0);
 
@@ -46,6 +54,9 @@ public class GameObject {
 
     public void setPosition(PointF position) {
         m_Position = position;
+    }
+    public void setPosition(float x, float y) {
+        m_Position.set(x, y);
     }
     PointF getPosition() {
         return m_Position;

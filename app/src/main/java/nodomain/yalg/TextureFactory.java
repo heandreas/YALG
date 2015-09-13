@@ -32,6 +32,7 @@ public class TextureFactory {
     private int sensorID;
     private int spiegelID;
     private int backgroundID;
+    private int onePixelID;
 
     public void loadTextures() {
         laserID = loadTexture(R.raw.laser);
@@ -39,6 +40,7 @@ public class TextureFactory {
         sensorID = loadTexture(R.raw.sensor);
         spiegelID = loadTexture(R.raw.spiegel);
         backgroundID = loadTexture(R.raw.background);
+        onePixelID = loadTexture(R.raw.onepx);
     }
 
     public int getTextureByName(String name) throws Exception {
@@ -52,6 +54,8 @@ public class TextureFactory {
             return spiegelID;
         if (name.equals("background"))
             return backgroundID;
+        if (name.equals("onepx"))
+            return onePixelID;
 
         throw new Exception("Could not find texture " + name + "!");
     }
