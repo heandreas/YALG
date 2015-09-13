@@ -101,7 +101,16 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         try {
-            gameObjects = LevelLoader.parse(getResources().openRawResource(R.raw.testlevel));
+            gameObjects = new ArrayList<GameObject>();
+            GameObject goBackground = new GameObject();
+
+            goBackground.setTextureName("background");
+            goBackground.setExtents(new PointF(2.0f, 2.0f));
+            goBackground.setUVScale(4.0f);
+
+            gameObjects.add(goBackground);
+
+            gameObjects.addAll(LevelLoader.parse(getResources().openRawResource(R.raw.testlevel)) );
             System.out.println("Read " + gameObjects.size() + " objects.");
         } catch (XmlPullParserException e) {
             e.printStackTrace();

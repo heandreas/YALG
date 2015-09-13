@@ -18,6 +18,8 @@ public class GameObject {
     protected PointF m_Position = new PointF(0, 0);
     protected PointF m_Rotation = new PointF(1, 0);
 
+    protected float m_uvScale = 1.0f;
+
     protected PointF m_Extents = new PointF(0.2f, 0.2f);
 
     protected boolean m_IsActive = true;
@@ -55,6 +57,10 @@ public class GameObject {
     }
     PointF getDirection() {
         return m_Rotation;
+    }
+
+    public void setUVScale(float fScale) {
+        m_uvScale = fScale;
     }
 
     public void setExtents(PointF extents) {
@@ -95,9 +101,9 @@ public class GameObject {
             corners[i].y += m_Position.y;
         }
         PointF[] uvs = {new PointF(0, 0),
-                new PointF(0, 1),
-                new PointF(1, 1),
-                new PointF(1, 0)};
+                new PointF(0, m_uvScale),
+                new PointF(m_uvScale, m_uvScale),
+                new PointF(m_uvScale, 0)};
 
         writePosToBuffer(corners[0], uvs[0], 0, vertexBuffer);
         writePosToBuffer(corners[2], uvs[2], 1, vertexBuffer);
@@ -129,6 +135,9 @@ public class GameObject {
         } catch(Exception e) {
             e.printStackTrace();
         }
+
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_REPEAT);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_REPEAT);
 
         GLES20.glUniform3f(laserColHandle, m_Color.getRed(), m_Color.getGreen(), m_Color.getBlue());
 

@@ -31,12 +31,14 @@ public class TextureFactory {
     private int primsaID;
     private int sensorID;
     private int spiegelID;
+    private int backgroundID;
 
     public void loadTextures() {
         laserID = loadTexture(R.raw.laser);
         primsaID = loadTexture(R.raw.prisma);
         sensorID = loadTexture(R.raw.sensor);
         spiegelID = loadTexture(R.raw.spiegel);
+        backgroundID = loadTexture(R.raw.background);
     }
 
     public int getTextureByName(String name) throws Exception {
@@ -48,6 +50,9 @@ public class TextureFactory {
             return sensorID;
         if (name.equals("mirror"))
             return spiegelID;
+        if (name.equals("background"))
+            return backgroundID;
+
         throw new Exception("Could not find texture " + name + "!");
     }
 
