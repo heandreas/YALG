@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Created by andreas on 10.09.2015.
  */
-public abstract class GameObject {
+public class GameObject {
     ColorF m_Color = new ColorF(1.0f, 1.0f, 1.0f);
 
     protected PointF m_Position = new PointF(0, 0);
