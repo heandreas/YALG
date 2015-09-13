@@ -108,15 +108,22 @@ public class LaserTracer {
 
             res.hitSegments.add(iHitIndex);
             res.hitIntensities.add(fIntensity);
+            //calculate point of impact
+            float fIntersection = intersectRayLine(vLaserSource, vLaserDir, line0, line1);
+            PointF vIntersection = Vec2D.add(line0, Vec2D.mul(fIntersection, Vec2D.subtract(line1, line0)) );
+
+            //spam line end
+            res.lineSegments.add(vIntersection);
+            float fNextLength = fFlightLength + fNearestHit;
+            res.lightLengths.add(fNextLength);
+
+            if(afRefractiveIndices[iHitIndex] < 0.0f)
+                return res;
 
             //calculate normalized surface normal
             PointF vLine = Vec2D.subtract(line1, line0);
             PointF vSurfaceNormal = Vec2D.flip(Vec2D.perpendicular(vLine));
             Vec2D.normalize(vSurfaceNormal);
-
-            //calculate point of impact
-            float fIntersection = intersectRayLine(vLaserSource, vLaserDir, line0, line1);
-            PointF vIntersection = Vec2D.add(line0, Vec2D.mul(fIntersection, Vec2D.subtract(line1, line0)) );
 
             //calculate direction of reflection
             PointF vReflected = Vec2D.add(Vec2D.mul(-2.0f, Vec2D.mul(Vec2D.dot(vSurfaceNormal, vLaserDir), vSurfaceNormal)), vLaserDir);
@@ -159,10 +166,7 @@ public class LaserTracer {
             //calculate amount of light reflected
             float fReflected = 1.0f - fRefracted;
 
-            //spam line end
-            res.lineSegments.add(vIntersection);
-            float fNextLength = fFlightLength + fNearestHit;
-            res.lightLengths.add(fNextLength);
+
 
             //continue with recursion, reflection
             Result resReflection = traceRecursion(vIntersection, vReflected, fRefractionMultiplier, geometry, afRefractiveIndices, iRecursionDepth+1, fReflected * fIntensity, fNextLength);
