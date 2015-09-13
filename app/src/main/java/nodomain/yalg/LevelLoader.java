@@ -98,6 +98,9 @@ public class LevelLoader {
             else if (name.equals("extents")) {
                 obj.setExtents(readPoint(parser));
             }
+            else if (name.equals("color")) {
+                ((LaserSource)obj).setColor(readColor(parser));
+            }
             else if (name.equals("mesh")) {
                 readMesh(parser, (Physical) obj);
             }
