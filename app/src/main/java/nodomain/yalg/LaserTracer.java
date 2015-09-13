@@ -133,31 +133,34 @@ public class LaserTracer {
             float fRefracted = 0.0f;
             boolean bTotalReflection = false;
 
-            //calculate which side of the object we're on
-            if(Vec2D.dot(vSurfaceNormal, Vec2D.subtract(vLaserSource, line0) ) < 0){
-                //from medium to air
-                //angle will become bigger
-                double fSinAngle = Math.sin(fImpactAngle) * (afRefractiveIndices[iHitIndex] * fRefractionMultiplier);
+            if(afRefractiveIndices[iHitIndex] < 5.0f) {
+                //calculate which side of the object we're on
+                if (Vec2D.dot(vSurfaceNormal, Vec2D.subtract(vLaserSource, line0)) < 0) {
+                    //from medium to air
+                    //angle will become bigger
+                    double fSinAngle = Math.sin(fImpactAngle) * (afRefractiveIndices[iHitIndex] * fRefractionMultiplier);
 
-                if(fSinAngle > 1.0f || fSinAngle < -1.0f)
-                    //refraction would be back into object
-                    bTotalReflection = true;
-                else{
-                    //calculate refraction
-                    fRefractionAngle = Math.asin(fSinAngle);
-                    float fFlippedImpactAngle = (float) Math.asin(Math.sin(fImpactAngle));
-                    fRefracted = (float) (2.0f * Math.sin(fFlippedImpactAngle)*Math.cos( fRefractionAngle ) / Math.sin(fFlippedImpactAngle + fRefractionAngle) );
+                    if (fSinAngle > 1.0f || fSinAngle < -1.0f)
+                        //refraction would be back into object
+                        bTotalReflection = true;
+                    else {
+                        //calculate refraction
+                        fRefractionAngle = Math.asin(fSinAngle);
+                        float fFlippedImpactAngle = (float) Math.asin(Math.sin(fImpactAngle));
+                        fRefracted = (float) (2.0f * Math.sin(fFlippedImpactAngle) * Math.cos(fRefractionAngle) / Math.sin(fFlippedImpactAngle + fRefractionAngle));
 
-                    //set refraction angle for direction calculation
-                    fRefractionAngle = Math.PI - fRefractionAngle;
+                        //set refraction angle for direction calculation
+                        fRefractionAngle = Math.PI - fRefractionAngle;
+                    }
+                } else {
+                    //from air to medium
+                    //angle will become smaller
+                    fRefractionAngle = Math.asin(Math.sin(fImpactAngle) / (afRefractiveIndices[iHitIndex] * fRefractionMultiplier));
+                    fRefracted = (float) (2.0f * Math.sin(fRefractionAngle) * Math.cos(fImpactAngle) / Math.sin(fImpactAngle + fRefractionAngle));
                 }
             }
-            else{
-                //from air to medium
-                //angle will become smaller
-                fRefractionAngle = Math.asin(Math.sin(fImpactAngle) / (afRefractiveIndices[iHitIndex] * fRefractionMultiplier) );
-                fRefracted = (float) (2.0f * Math.sin(fRefractionAngle)*Math.cos( fImpactAngle ) / Math.sin(fImpactAngle + fRefractionAngle) );
-            }
+            else
+                bTotalReflection = true;
 
             //calculate direction of refraction
             double fInvertedSurfaceAngle = Math.atan2(-vSurfaceNormal.y, -vSurfaceNormal.x);
@@ -165,8 +168,6 @@ public class LaserTracer {
 
             //calculate amount of light reflected
             float fReflected = 1.0f - fRefracted;
-
-
 
             //continue with recursion, reflection
             Result resReflection = traceRecursion(vIntersection, vReflected, fRefractionMultiplier, geometry, afRefractiveIndices, fReflected * fIntensity, iRecursionDepth+1, fNextLength);
