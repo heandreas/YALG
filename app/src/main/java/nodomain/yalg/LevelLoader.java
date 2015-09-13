@@ -50,11 +50,16 @@ public class LevelLoader {
     }
 
     static void readMesh(XmlPullParser parser, Refractor refractor) throws XmlPullParserException, IOException {
+        String normalizer = parser.getAttributeValue(null, "normalizer");
+        float multiplier = 1.0f;
+        if (normalizer != null) {
+            multiplier = 1.0f / Float.parseFloat(normalizer);
+        }
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-            refractor.addMeshPoint(readPoint(parser));
+            refractor.addMeshPoint(Vec2D.mul(multiplier, readPoint(parser)));
         }
     }
 
@@ -89,6 +94,9 @@ public class LevelLoader {
             }
             else if (name.equals("orientation")) {
                 obj.setDirection(readPoint(parser));
+            }
+            else if (name.equals("extents")) {
+                obj.setExtents(readPoint(parser));
             }
             else if (name.equals("mesh")) {
                 readMesh(parser, (Refractor)obj);

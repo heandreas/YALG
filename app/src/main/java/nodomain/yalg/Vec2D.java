@@ -20,6 +20,10 @@ public class Vec2D {
         return new PointF(x * vector.x, x * vector.y);
     }
 
+    static public PointF scale(PointF point, PointF scaler) {
+        return new PointF(point.x * scaler.x, point.y * scaler.y);
+    }
+
     static public float dot(PointF vectorA, PointF vectorB) {
         return vectorA.x * vectorB.x + vectorA.y * vectorB.y;
     }

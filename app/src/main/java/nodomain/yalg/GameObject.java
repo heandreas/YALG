@@ -1,11 +1,7 @@
 package nodomain.yalg;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.opengl.GLES20;
-import android.opengl.GLUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -17,9 +13,9 @@ import java.util.ArrayList;
  */
 public abstract class GameObject {
     protected PointF m_Position = new PointF(0, 0);
-    protected PointF m_Direction = new PointF(1, 0);
+    protected PointF m_Rotation = new PointF(1, 0);
 
-    protected PointF m_Extents = new PointF(0, 0);
+    protected PointF m_Extents = new PointF(0.2f, 0.2f);
 
     protected boolean m_IsActive = true;
     protected boolean m_MustBeActiveForWinning = false;
@@ -51,11 +47,11 @@ public abstract class GameObject {
     }
 
     public void setDirection(PointF direction) {
-        m_Direction = direction;
-        Vec2D.normalize(m_Direction);
+        m_Rotation = direction;
+        Vec2D.normalize(m_Rotation);
     }
     PointF getDirection() {
-        return m_Direction;
+        return m_Rotation;
     }
 
     public void setExtents(PointF extents) {
@@ -86,10 +82,15 @@ public abstract class GameObject {
         }
 
         float[] vertexBuffer = new float[30];
-        PointF[] corners = {new PointF(m_Position.x - m_Extents.x, m_Position.y - m_Extents.y),
-                new PointF(m_Position.x - m_Extents.x, m_Position.y + m_Extents.y),
-                new PointF(m_Position.x + m_Extents.x, m_Position.y + m_Extents.y),
-                new PointF(m_Position.x + m_Extents.x, m_Position.y - m_Extents.y)};
+        PointF[] corners = {new PointF(-m_Extents.x, -m_Extents.y),
+                new PointF(-m_Extents.x, m_Extents.y),
+                new PointF(m_Extents.x, m_Extents.y),
+                new PointF(m_Extents.x, -m_Extents.y)};
+        for (int i = 0; i < 4; i++) {
+            corners[i] = Vec2D.rotatePoint(corners[i], m_Rotation);
+            corners[i].x += m_Position.x;
+            corners[i].y += m_Position.y;
+        }
         PointF[] uvs = {new PointF(0, 0),
                 new PointF(0, 1),
                 new PointF(1, 1),

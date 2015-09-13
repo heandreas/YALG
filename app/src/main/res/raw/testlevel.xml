@@ -13,10 +13,12 @@
         <texture file="prism"/>
         <movable/>
 
-        <mesh>
-            <position x="-0.4" y="-0.2" />
-            <position x="0.4" y="-0.2" />
-            <position x="0" y="0.4" />
+        <extents x = "0.3" y = "0.3"/>
+
+        <mesh normalizer = "256">
+            <position x="9" y="232" />
+            <position x="243" y="232" />
+            <position x="126" y="30" />
         </mesh>
 
         <refraction index="1.5" />

@@ -32,7 +32,7 @@ public class YalgGLSurface extends GLSurfaceView {
                     "varying vec2 uv;" +
                     "void main() {" +
                     "  gl_Position = vec4(vPosition, 1);" +
-                    "  uv = vUV;" +
+                    "  uv = vec2(vUV.x, 1 - vUV.y);" +
                     "}";
 
     private final String default_FS =

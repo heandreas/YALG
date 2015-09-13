@@ -21,7 +21,7 @@ public class LaserSource extends GameObject {
 
     public void getRays(ArrayList<PointF> origins, ArrayList<PointF> dirs) {
         origins.add(m_Position);
-        dirs.add(m_Direction);
+        dirs.add(m_Rotation);
     }
 
 }
