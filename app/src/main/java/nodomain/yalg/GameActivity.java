@@ -78,15 +78,6 @@ public class GameActivity extends Activity {
                 laserColors.add(new ColorF(0, intensity, 0));
             }
         }
-
-        laserSegments.addAll(obstacleLines);
-
-        for (int i = 0; i < obstacleLines.size() / 2; i++) {
-            laserColors.add(new ColorF(1, 1, 1));
-
-            laserLengths.add(new Float(0));
-            laserLengths.add(new Float(0));
-        }
     }
 
 

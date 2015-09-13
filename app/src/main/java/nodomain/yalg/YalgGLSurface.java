@@ -100,7 +100,7 @@ public class YalgGLSurface extends GLSurfaceView {
         setRenderer(new Renderer() {
             @Override
             public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-                System.out.println("GL Surface created.");
+                GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
                 TextureFactory.getInstance().loadTextures();
 

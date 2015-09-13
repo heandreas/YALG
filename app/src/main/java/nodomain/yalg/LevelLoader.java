@@ -49,7 +49,7 @@ public class LevelLoader {
         return new ColorF(Float.parseFloat(r), Float.parseFloat(g), Float.parseFloat(b));
     }
 
-    static void readMesh(XmlPullParser parser, Refractor refractor) throws XmlPullParserException, IOException {
+    static void readMesh(XmlPullParser parser, Physical physical) throws XmlPullParserException, IOException {
         String normalizer = parser.getAttributeValue(null, "normalizer");
         float multiplier = 1.0f;
         if (normalizer != null) {
@@ -59,7 +59,7 @@ public class LevelLoader {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-            refractor.addMeshPoint(Vec2D.mul(multiplier, readPoint(parser)));
+            physical.addMeshPoint(Vec2D.mul(multiplier, readPoint(parser)));
         }
     }
 
@@ -75,7 +75,7 @@ public class LevelLoader {
             obj = new Refractor();
         }
         else if (type.equals("receptor")) {
-            obj = new Refractor();
+            obj = new Receptor();
         }
         else {
             throw new IOException("Unknown object type!");
@@ -99,7 +99,7 @@ public class LevelLoader {
                 obj.setExtents(readPoint(parser));
             }
             else if (name.equals("mesh")) {
-                readMesh(parser, (Refractor)obj);
+                readMesh(parser, (Physical) obj);
             }
             else if (name.equals("texture")) {
                 obj.setTextureName(parser.getAttributeValue(null, "file"));

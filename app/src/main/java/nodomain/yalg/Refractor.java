@@ -7,8 +7,7 @@ import java.util.ArrayList;
 /**
  * Created by andreas on 11.09.2015.
  */
-public class Refractor extends GameObject {
-    ArrayList<PointF> points = new ArrayList<PointF>();
+public class Refractor extends Physical {
     float refractionIndex = 1.0f;
 
     public float getRefractionIndex() {
@@ -19,13 +18,6 @@ public class Refractor extends GameObject {
         this.refractionIndex = refractionIndex;
     }
 
-    public void clearMesh() {
-        points.clear();
-    }
-
-    public void addMeshPoint(PointF point) {
-        points.add(new PointF(point.x - 0.5f, (1.0f - point.y) - 0.5f));
-    }
 
     public void getRefractors(ArrayList<PointF> lineSegments, ArrayList<Float> coefficients) {
         PointF scale = Vec2D.mul(2.0f, m_Extents);
