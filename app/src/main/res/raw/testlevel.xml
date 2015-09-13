@@ -3,14 +3,14 @@
     <gameobject type="laser" id="laser-1">
         <position x="0.5" y=".05" />
         <orientation x="-1" y="0"/>
-        <texture file="laser.png"/>
+        <texture file="laser"/>
         <color r="1" g="0" b="0"/>
     </gameobject>
 
     <gameobject type="refractor" id="prism-1">
         <position x="-0.3" y="-0.1" />
         <orientation x="1" y="0"/>
-        <texture file="prism.png"/>
+        <texture file="prism"/>
         <movable/>
 
         <mesh>
