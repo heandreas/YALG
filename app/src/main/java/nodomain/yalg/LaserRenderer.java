@@ -44,9 +44,15 @@ public class LaserRenderer {
                     "varying vec3 uv;" +
                     "uniform float time;" +
                     "void main() {" +
-                    //"  gl_FragColor = vec4(col, sin(uv.y * 1.57079633) * sin(time + 15.0f*uv.x) );" +
-                    //"  gl_FragColor = vec4(col, sin(uv.y * 1.57079633) * fract(time + .5 ));" +
-                    "  gl_FragColor = vec4(col, sin(uv.y * 1.57079633));" +
+                    //"  gl_FragColor = vec4(col, sin(uv.y * 1.57079633) * fract(uv.x*15.0 + time));" +
+                    "  float falloff = 1.0 - 2.0 * abs(0.5 - uv.y);" +
+                    "  float fWaveParam = uv.x * 4.0 - 2.0 * time;" +
+                    "  float fClampedWave = fract(fWaveParam);" +
+                    //"  float wave = 0.5*( 1.0 + sin(fClampedWave * 2.0 * 3.14159);" +
+                    "  float wave = 2.0 * abs(0.5 - fClampedWave);" +
+                    "  float alpha = 1.0 * falloff * wave;" +
+                    "  gl_FragColor = vec4(col, alpha );" +
+                    //"  gl_FragColor = vec4(col, sin(uv.y * 1.57079633));" +
                     "}";
 
     /*private final String fragmentShaderCode =
@@ -153,7 +159,10 @@ public class LaserRenderer {
 
     public void render(float fDeltaTime)
     {
+        final float fTimeOverflow = 1000.0f;
         m_fTime += fDeltaTime;
+        if(m_fTime > fTimeOverflow)
+            m_fTime -= fTimeOverflow;
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, m_VBO);
         GLES20.glUseProgram(m_Program);
