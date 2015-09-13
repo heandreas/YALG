@@ -29,22 +29,32 @@ public class LaserTracer {
     }
 
     public static class Result{
+        //two vertices per segment
         public List<PointF> lineSegments;
+        //one intensity per segment
         public List<Float> intensities;
+        //two flight lengths per segment
+        public List<Float> lightLengths;
     }
-
-    //TODO: add color
 
     //geometry as line segments (two per line segment)
     public static Result
-    traceRecursion(PointF vLaserSource, PointF vLaserDir, float fRefractionMultiplier, float fIntensity, PointF[] geometry, float[] afRefractiveIndices, int iRecursionDepth){
+    traceRecursion(PointF vLaserSource, PointF vLaserDir, float fRefractionMultiplier, PointF[] geometry, float[] afRefractiveIndices, int iRecursionDepth, float fIntensity, float fFlightLength){
+
+        //init return lists
         List<PointF> lOutLines = new ArrayList<PointF>();
         List<Float> lOutIntensities = new ArrayList<Float>();
+        List<Float> lOutLengths = new ArrayList<Float>();
 
+        //important for angle calculation
+        Vec2D.normalize(vLaserDir);
+
+        //recursion limiter
         if(fIntensity < 0.05f || iRecursionDepth > 20) {
             Result res = new Result();
             res.intensities = lOutIntensities;
             res.lineSegments = lOutLines;
+            res.lightLengths = lOutLengths;
 
             return res;
         }
@@ -52,16 +62,21 @@ public class LaserTracer {
         //populate output structure
         lOutLines.add(vLaserSource);
         lOutIntensities.add(fIntensity);
+        lOutLengths.add(fFlightLength);
 
+        //initialize to infinity
         float fNearestHit = Float.MAX_VALUE;
         int iHitIndex = -1;
+
         //check each geometry line against this ray
         for (int iLine = 0; iLine < geometry.length/2; iLine++) {
             //check if source on right side
             PointF line0 = geometry[iLine*2];
             PointF line1 = geometry[iLine*2 + 1];
 
+            //calculate intersection with geometry line
             float fIntersection = intersectRayLine(vLaserSource, vLaserDir, line0, line1);
+
             if(fIntersection > 0.0f && fIntersection < 1.0f){
                 //stuff intersects
                 //calculate intersection PointF
@@ -69,16 +84,19 @@ public class LaserTracer {
                 //calculate distance to source
                 float fHitDistance = Vec2D.subtract(vLaserSource, vIntersection).length();
                 if(Vec2D.subtract(vLaserSource, vIntersection).length() < fNearestHit && fHitDistance > 0.001f) {
+                    //new minimum distance
                     fNearestHit = fHitDistance;
                     iHitIndex = iLine;
                 }
             }
         }
-        //check out if we hit
+        //check if we hit
         if(iHitIndex == -1)
         {
             //bigger than screen
-            lOutLines.add(Vec2D.add(vLaserSource, Vec2D.mul(3, vLaserDir)) );
+            final float fInfLength = 3.0f;
+            lOutLines.add(Vec2D.add(vLaserSource, Vec2D.mul(fInfLength, vLaserDir)) );
+            lOutLengths.add(fFlightLength + fInfLength);
         }
         else
         {
@@ -96,7 +114,6 @@ public class LaserTracer {
             float fIntersection = intersectRayLine(vLaserSource, vLaserDir, line0, line1);
             PointF vIntersection = Vec2D.add(line0, Vec2D.mul(fIntersection, Vec2D.subtract(line1, line0)) );
 
-
             //calculate direction of reflection
             PointF vReflected = Vec2D.add(Vec2D.mul(-2.0f, Vec2D.mul(Vec2D.dot(vSurfaceNormal, vLaserDir), vSurfaceNormal)), vLaserDir);
 
@@ -112,12 +129,12 @@ public class LaserTracer {
                 double fSinAngle = Math.sin(fImpactAngle) * (afRefractiveIndices[iHitIndex] * fRefractionMultiplier);
 
                 if(fSinAngle > 1.0f || fSinAngle < -1.0f)
+                    //refraction would be back into object
                     bTotalReflection = true;
-
                 else{
+                    //calculate refraction
                     fRefractionAngle = Math.asin(fSinAngle);
                     float fFlippedImpactAngle = (float) Math.asin(Math.sin(fImpactAngle));
-
                     fRefracted = (float) (2.0f * Math.sin(fFlippedImpactAngle)*Math.cos( fRefractionAngle ) / Math.sin(fFlippedImpactAngle + fRefractionAngle) );
 
                     //set refraction angle for direction calculation
@@ -140,26 +157,39 @@ public class LaserTracer {
 
             //spam line end
             lOutLines.add(vIntersection);
+            float fNextLength = fFlightLength + fNearestHit;
+            lOutLengths.add(fNextLength);
 
             //continue with recursion, reflection
-            Result res = traceRecursion(vIntersection, vReflected, fRefractionMultiplier, fReflected * fIntensity, geometry, afRefractiveIndices, iRecursionDepth+1);
+            Result res = traceRecursion(vIntersection, vReflected, fRefractionMultiplier, geometry, afRefractiveIndices, iRecursionDepth+1, fReflected * fIntensity, fNextLength);
             //merge results
             lOutLines.addAll(res.lineSegments);
             lOutIntensities.addAll(res.intensities);
+            lOutLengths.addAll(res.lightLengths);
 
             //continue with recursion, refraction
             if(!bTotalReflection) {
-                res = traceRecursion(vIntersection, vRefracted, fRefractionMultiplier, fRefracted * fIntensity, geometry, afRefractiveIndices, iRecursionDepth+1);
+                res = traceRecursion(vIntersection, vRefracted, fRefractionMultiplier, geometry, afRefractiveIndices, iRecursionDepth+1, fRefracted * fIntensity, fNextLength);
                 //merge results
                 lOutLines.addAll(res.lineSegments);
                 lOutIntensities.addAll(res.intensities);
+                lOutLengths.addAll(res.lightLengths);
             }
         }
 
+        //assemble result
         Result res = new Result();
         res.intensities = lOutIntensities;
         res.lineSegments = lOutLines;
+        res.lightLengths = lOutLengths;
 
         return res;
+    }
+
+    //method for outside callers
+    //occludes iteration setup
+    public static Result
+    traceRecursion(PointF vLaserSource, PointF vLaserDir, float fRefractionMultiplier, PointF[] geometry, float[] afRefractiveIndices){
+        return traceRecursion(vLaserSource, vLaserDir, fRefractionMultiplier, geometry, afRefractiveIndices, 0, 1.0f, 0.0f);
     }
 }

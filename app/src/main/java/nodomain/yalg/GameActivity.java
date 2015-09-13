@@ -45,7 +45,7 @@ public class GameActivity extends Activity {
 
     GameObject selectedObject = null;
 
-    public void computeLasers(List<PointF> laserSegments, List<ColorF> laserColors) {
+    public void computeLasers(List<PointF> laserSegments, List<Float> laserLengths, List<ColorF> laserColors) {
         if (gameObjects == null)
             return;
 
@@ -67,22 +67,25 @@ public class GameActivity extends Activity {
         for (int i = 0; i < origins.size(); i++)
         {
             LaserTracer.Result result = LaserTracer.traceRecursion(origins.get(i), dirs.get(i), 1.0f,
-                    1.0f, lineSegmentsArray, coefficientsArray, 0);
-            for (int j = 0; j < result.lineSegments.size(); j++)
-                laserSegments.add(result.lineSegments.get(j));
+                    lineSegmentsArray, coefficientsArray);
+
+            laserSegments.addAll(result.lineSegments);
+
+            laserLengths.addAll(result.lightLengths);
+
             for (int j = 0; j < result.intensities.size(); j++) {
                 float intensity = result.intensities.get(j);
                 laserColors.add(new ColorF(0, intensity, 0));
             }
         }
 
-        // Hack: Add obstacles as lasers. Yeah...
-        for (int i = 0; i < obstacleLines.size(); i++) {
-            PointF p = obstacleLines.get(i);
-            laserSegments.add(p);
-            if (i % 2 == 0)
-                laserColors.add(new ColorF(0, 0, 1));
+        laserSegments.addAll(obstacleLines);
 
+        for (int i = 0; i < obstacleLines.size() / 2; i++) {
+            laserColors.add(new ColorF(1, 1, 1));
+
+            laserLengths.add(new Float(0));
+            laserLengths.add(new Float(0));
         }
     }
 
@@ -100,9 +103,13 @@ public class GameActivity extends Activity {
             e.printStackTrace();
         }
 
+        //TODO: remove debug call
+
         ArrayList<PointF> laserSegments = new ArrayList<PointF>();
+        ArrayList<Float> laserLengths = new ArrayList<>();
         ArrayList<ColorF> laserColors = new ArrayList<ColorF>();
-        computeLasers(laserSegments, laserColors);
+
+        computeLasers(laserSegments, laserLengths, laserColors);
 
         TextureFactory.getInstance().setGameActivity(this);
 

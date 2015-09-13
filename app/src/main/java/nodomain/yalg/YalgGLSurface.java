@@ -23,62 +23,18 @@ public class YalgGLSurface extends GLSurfaceView {
 
     GameActivity gameActivity;
 
-    private final String default_VS =
-            "attribute vec3 vPosition;" +
-                    "attribute vec2 vUV;" +
-                    "varying vec2 uv;" +
-                    "void main() {" +
-                    "  gl_Position = vec4(vPosition, 1);" +
-                    "  uv = vUV;" +
-                    "}";
+    //last frame time
+    long m_iLastTime;
 
-    private final String default_FS =
-            "precision mediump float;" +
-            "uniform sampler2D texture;" +
-                    "varying vec2 uv;" +
-                    "void main() {" +
-                    "  gl_FragColor = texture2D(texture, uv);" +
-                    "}";
-
-    private int m_DefaultProgram;
-
-
-    public static int loadShader(int type, String shaderCode) {
-        int shader = GLES20.glCreateShader(type);
-
-        // add the source code to the shader and compile it
-        GLES20.glShaderSource(shader, shaderCode);
-        GLES20.glCompileShader(shader);
-
-        return shader;
-    }
-
-    void renderFrame() {
+    void renderFrame(float fDeltaTime) {
         ArrayList<PointF> laserSegments = new ArrayList<PointF>();
+        ArrayList<Float> laserLengths = new ArrayList<>();
         ArrayList<ColorF> laserColors = new ArrayList<ColorF>();
 
-        GLES20.glUseProgram(m_DefaultProgram);
+        gameActivity.computeLasers(laserSegments, laserLengths, laserColors);
 
-        int posHandle = GLES20.glGetAttribLocation(m_DefaultProgram, "vPosition");
-        int uvHandle = GLES20.glGetAttribLocation(m_DefaultProgram, "vUV");
-        int textureHandle = GLES20.glGetUniformLocation(m_DefaultProgram, "texture");
-
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glUniform1i(textureHandle, 0);
-
-        for (GameObject go : gameActivity.gameObjects) {
-            go.render(posHandle, uvHandle);
-        }
-
-        GLES20.glDisableVertexAttribArray(posHandle);
-        GLES20.glDisableVertexAttribArray(uvHandle);
-
-        gameActivity.computeLasers(laserSegments, laserColors);
-
-        laserRenderer.setLasers(laserSegments, laserColors);
-        laserRenderer.render();
-
-
+        laserRenderer.setLasers(laserSegments, laserLengths, laserColors);
+        laserRenderer.render(fDeltaTime);
     }
 
     public YalgGLSurface(GameActivity gameActivity) {
@@ -88,24 +44,16 @@ public class YalgGLSurface extends GLSurfaceView {
 
         System.out.println("Setting EGL context.");
         setEGLContextClientVersion(2);
+
         setRenderer(new Renderer() {
             @Override
             public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-
-                TextureFactory.getInstance().loadTextures();
+                System.out.println("GL Surface created.");
 
                 GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
                 laserRenderer = new LaserRenderer();
 
-                int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER,
-                        default_VS);
-                int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER,
-                        default_FS);
-
-                m_DefaultProgram = GLES20.glCreateProgram();
-                GLES20.glAttachShader(m_DefaultProgram, vertexShader);
-                GLES20.glAttachShader(m_DefaultProgram, fragmentShader);
-                GLES20.glLinkProgram(m_DefaultProgram);
+                m_iLastTime = System.nanoTime();
             }
 
             @Override
@@ -119,7 +67,10 @@ public class YalgGLSurface extends GLSurfaceView {
             public void onDrawFrame(GL10 gl) {
                 GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-                renderFrame();
+                float fDeltaTime = (System.nanoTime()-m_iLastTime) * 1e-9f;
+                m_iLastTime = System.nanoTime();
+
+                renderFrame(fDeltaTime);
             }
         });
     }
