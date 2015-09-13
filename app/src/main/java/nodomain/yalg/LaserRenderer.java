@@ -20,7 +20,7 @@ public class LaserRenderer {
     private int m_NumVertices;
 
     static final int BYTES_PER_FLOAT = 4;
-    static final float LASER_WIDTH = 0.01f;
+    static final float LASER_WIDTH = 0.015f;
 
     private float m_fTime;
 
@@ -49,12 +49,13 @@ public class LaserRenderer {
                     "void main() {" +
                     //"  gl_FragColor = vec4(col, sin(uv.y * 1.57079633) * fract(uv.x*15.0 + time));" +
                     "  float falloff = 1.0 - 2.0 * abs(0.5 - uv.y);" +
-                    "  float fWaveParam = uv.x * 4.0 - 2.0 * time;" +
+                    "  float fWaveParam = uv.x * 2.5 - 3.0 * time;" +
                     "  float fClampedWave = fract(fWaveParam);" +
                     //"  float wave = 0.5*( 1.0 + sin(fClampedWave * 2.0 * 3.14159);" +
                     "  float wave = 2.0 * abs(0.5 - fClampedWave);" +
-                    "  float alpha = 1.0 * falloff * wave;" +
-                    "  gl_FragColor = vec4(col, alpha );" +
+                    "  float alpha = falloff * wave;" +
+                    "  vec3 colOverdrive = vec3(1.0,1.0,1.0) * max(0.0, alpha * 2.0 - 1.0);" +
+                    "  gl_FragColor = vec4(colOverdrive + col, alpha * 2.0 );" + //overdrive alpha value
                     //"  gl_FragColor = vec4(col, sin(uv.y * 1.57079633));" +
                     "}";
 
