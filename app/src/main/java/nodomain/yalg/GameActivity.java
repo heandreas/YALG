@@ -62,6 +62,11 @@ public class GameActivity extends Activity {
             int numAddedSegments = (obstacleLines.size() - numVerticesOld) / 2;
             for (int j = 0; j < numAddedSegments; j++)
                 obstacleObjectIndices.add(i);
+
+            if (go instanceof Receptor) {
+                Receptor r = (Receptor) go;
+                r.resetAbsorbedCounters();
+            }
         }
         PointF[] lineSegmentsArray = new PointF[obstacleLines.size()];
         for (int i = 0; i < obstacleLines.size(); i++)
@@ -89,7 +94,8 @@ public class GameActivity extends Activity {
                 int objectIndex = obstacleObjectIndices.get(segmentIndex);
                 GameObject go = gameObjects.get(objectIndex);
                 if (go instanceof Receptor) {
-                    System.out.println("Laser hits receptor!");
+                    Receptor r = (Receptor)go;
+                    r.addGreen(result.hitIntensities.get(j));
                 }
             }
         }

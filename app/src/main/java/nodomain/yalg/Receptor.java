@@ -11,7 +11,7 @@ public class Receptor extends Physical {
     GameObject statusBarBlue = new GameObject();
 
     static final float BAR_HEIGHT = 26.0f / 128.0f;
-    static final float BAR_WIDTH = 84.0f / 128.0f;
+    static final float BAR_WIDTH = 75.0f / 128.0f;
     static final float BAR_X = 24.0f / 128.0f;
     static final float BAR_Y = 22.0f / 128.0f;
 
@@ -20,8 +20,34 @@ public class Receptor extends Physical {
     float requiredBlue = 0.0f;
 
     float absorbedRed = 0.0f;
-    float absorbedGreen = 0.0f;
+    float absorbedGreen = 0.25f;
     float absorbedBlue = 0.0f;
+
+    void resetAbsorbedCounters() {
+        absorbedRed = 0.0f;
+        absorbedGreen = 0.0f;
+        absorbedBlue = 0.0f;
+    }
+
+    void addRed(float value) {
+        absorbedRed += value;
+    }
+    void addGreen(float value) {
+        absorbedGreen += value;
+    }
+    void addBlue(float value) {
+        absorbedBlue += value;
+    }
+
+    void setRequiredRed(float value) {
+        requiredRed = value;
+    }
+    void setRequiredGreen(float value) {
+        absorbedGreen = value;
+    }
+    void setRequiredBlue(float value) {
+        absorbedBlue = value;
+    }
 
     Receptor() {
         refractionIndex = -1;
@@ -36,19 +62,31 @@ public class Receptor extends Physical {
 
     public void render(int posHandle, int uvHandle, int laserColHandle) {
         PointF scale = Vec2D.mul(2.0f, m_Extents);
-        PointF minPos = Vec2D.subtract(m_Position, m_Extents);
-        minPos.x += scale.x * (BAR_X + BAR_WIDTH * 0.5f);
-        minPos.y += scale.y * (BAR_Y + BAR_HEIGHT * 0.5f);
 
         float redStatus = 1.0f;
         if (requiredRed > 0.0f)
             redStatus = Math.min(1.0f, (requiredRed - absorbedRed) / requiredRed);
         float greenStatus = 1.0f;
         if (requiredGreen > 0.0f)
-            greenStatus = Math.min(1.0f, (requiredGreen - absorbedGreen) / requiredGreen);
+            greenStatus = Math.min(1.0f, 1.0f - (requiredGreen - absorbedGreen) / requiredGreen);
         float blueStatus = 1.0f;
         if (requiredBlue > 0.0f)
             blueStatus = Math.min(1.0f, (requiredBlue - absorbedBlue) / requiredBlue);
+
+        float barWidthRed = BAR_WIDTH * redStatus;
+        float barWidthGreen = BAR_WIDTH * greenStatus;
+        float barWidthBlue = BAR_WIDTH * blueStatus;
+
+        PointF minPos = Vec2D.subtract(m_Position, m_Extents);
+
+        float minY = minPos.y + scale.y * (BAR_Y + BAR_HEIGHT * 0.5f);
+
+        float xRed = minPos.x + scale.x * (BAR_X + barWidthRed * 0.5f);
+        float xGreen = minPos.x + scale.x * (BAR_X + barWidthGreen * 0.5f);
+        float xBlue = minPos.x + scale.x * (BAR_X + barWidthBlue * 0.5f);
+
+        minPos.x += scale.x * (BAR_X + BAR_WIDTH * 0.5f);
+        minPos.y += scale.y * (BAR_Y + BAR_HEIGHT * 0.5f);
 
         float barExtentsX = m_Extents.x * BAR_WIDTH;
         float barExtentsY = m_Extents.y * BAR_HEIGHT;
@@ -56,12 +94,12 @@ public class Receptor extends Physical {
         statusBarGreen.setExtents(barExtentsX * greenStatus, barExtentsY);
         statusBarBlue.setExtents(barExtentsX * blueStatus, barExtentsY);
 
-        float yPos = minPos.y;
-        statusBarRed.setPosition(minPos.x, yPos);
+        float yPos = minY;
+        statusBarRed.setPosition(xRed, yPos);
         yPos += scale.y * BAR_HEIGHT;
-        statusBarGreen.setPosition(minPos.x, yPos);
+        statusBarGreen.setPosition(xGreen, yPos);
         yPos += scale.y * BAR_HEIGHT;
-        statusBarBlue.setPosition(minPos.x, yPos);
+        statusBarBlue.setPosition(xBlue, yPos);
 
         statusBarRed.render(posHandle, uvHandle, laserColHandle);
         statusBarGreen.render(posHandle, uvHandle, laserColHandle);
