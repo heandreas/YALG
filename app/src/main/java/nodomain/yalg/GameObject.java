@@ -77,6 +77,9 @@ public class GameObject {
     public void setExtents(PointF extents) {
         m_Extents = extents;
     }
+    public void setExtents(float x, float y) {
+        m_Extents.set(x, y);
+    }
     PointF getExtents() {
         return m_Extents;
     }
