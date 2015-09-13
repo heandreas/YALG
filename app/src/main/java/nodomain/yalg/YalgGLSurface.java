@@ -38,8 +38,14 @@ public class YalgGLSurface extends GLSurfaceView {
     private final String default_FS =
             "precision mediump float;" +
                     "uniform sampler2D texture;" +
+                    "uniform vec3 colLaser;" +
                     "varying vec2 uv;" +
                     "void main() {" +
+                    //"  vec4 texcolor = texture2D(texture, uv);" +
+                    //"  vec3 laserBlend = colLaser * texcolor.r" +
+                    //"  vec3 colorBlend = vec3(1,1,1) * (texcolor.g)" +
+                    //"  gl_FragColor = vec4(laserBlend + colorBlend, texcolor.a)" +
+                    //"  gl_FragColor = texcolor;" +
                     "  gl_FragColor = texture2D(texture, uv);" +
                     "}";
 
@@ -61,12 +67,13 @@ public class YalgGLSurface extends GLSurfaceView {
         int posHandle = GLES20.glGetAttribLocation(m_DefaultProgram, "vPosition");
         int uvHandle = GLES20.glGetAttribLocation(m_DefaultProgram, "vUV");
         int textureHandle = GLES20.glGetUniformLocation(m_DefaultProgram, "texture");
+        int laserColorHandle = GLES20.glGetUniformLocation(m_DefaultProgram, "colLaser");
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glUniform1i(textureHandle, 0);
 
         for (GameObject go : gameActivity.gameObjects) {
-            go.render(posHandle, uvHandle);
+            go.render(posHandle, uvHandle, laserColorHandle);
         }
 
         GLES20.glDisableVertexAttribArray(posHandle);

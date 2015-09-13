@@ -1,5 +1,6 @@
 package nodomain.yalg;
 
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.opengl.GLES20;
 
@@ -12,6 +13,8 @@ import java.util.ArrayList;
  * Created by andreas on 10.09.2015.
  */
 public abstract class GameObject {
+    ColorF m_Color = new ColorF(1.0f, 1.0f, 1.0f);
+
     protected PointF m_Position = new PointF(0, 0);
     protected PointF m_Rotation = new PointF(1, 0);
 
@@ -74,7 +77,7 @@ public abstract class GameObject {
         buffer[offset * 5 + 4] = uv.y;
     }
 
-    public void render(int posHandle, int uvHandle) {
+    public void render(int posHandle, int uvHandle, int laserColHandle) {
         if (m_VBO < 0) {
             int[] tmp = new int[1];
             GLES20.glGenBuffers(1, tmp, 0);
@@ -126,6 +129,8 @@ public abstract class GameObject {
         } catch(Exception e) {
             e.printStackTrace();
         }
+
+        GLES20.glUniform3f(laserColHandle, m_Color.getRed(), m_Color.getGreen(), m_Color.getBlue());
 
         // Draw the triangles.
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 6);
