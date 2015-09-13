@@ -101,6 +101,9 @@ public class LevelLoader {
             else if (name.equals("color")) {
                 obj.setColor(readColor(parser));
             }
+            else if (name.equals("requiredColor")) {
+                ((Receptor)obj).setRequiredColor(readColor(parser));
+            }
             else if (name.equals("mesh")) {
                 readMesh(parser, (Physical) obj);
             }

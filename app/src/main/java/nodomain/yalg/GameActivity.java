@@ -129,7 +129,15 @@ public class GameActivity extends Activity {
                     GameObject go = gameObjects.get(objectIndex);
                     if (go instanceof Receptor) {
                         Receptor r = (Receptor)go;
-                        r.addGreen(result.hitIntensities.get(j));
+                        if(iColor == 0) {
+                            r.addRed(result.hitIntensities.get(j));
+                        }
+                        else if(iColor == 1) {
+                            r.addGreen(result.hitIntensities.get(j));
+                        }
+                        else{
+                            r.addBlue(result.hitIntensities.get(j));
+                        }
                     }
                 }
             }

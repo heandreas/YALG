@@ -15,9 +15,7 @@ public class Receptor extends Physical {
     static final float BAR_X = 24.0f / 128.0f;
     static final float BAR_Y = 22.0f / 128.0f;
 
-    float requiredRed = 0.0f;
-    float requiredGreen = 0.5f;
-    float requiredBlue = 0.0f;
+    ColorF requiredColor = new ColorF(1, 1, 1);
 
     float absorbedRed = 0.0f;
     float absorbedGreen = 0.25f;
@@ -39,14 +37,8 @@ public class Receptor extends Physical {
         absorbedBlue += value;
     }
 
-    void setRequiredRed(float value) {
-        requiredRed = value;
-    }
-    void setRequiredGreen(float value) {
-        absorbedGreen = value;
-    }
-    void setRequiredBlue(float value) {
-        absorbedBlue = value;
+    void setRequiredColor(ColorF value) {
+        requiredColor = value;
     }
 
     Receptor() {
@@ -64,14 +56,14 @@ public class Receptor extends Physical {
         PointF scale = Vec2D.mul(2.0f, m_Extents);
 
         float redStatus = 1.0f;
-        if (requiredRed > 0.0f)
-            redStatus = Math.min(1.0f, (requiredRed - absorbedRed) / requiredRed);
+        if (requiredColor.red > 0.0f)
+            redStatus = Math.min(1.0f, 1.0f - (requiredColor.red - absorbedRed) / requiredColor.red);
         float greenStatus = 1.0f;
-        if (requiredGreen > 0.0f)
-            greenStatus = Math.min(1.0f, 1.0f - (requiredGreen - absorbedGreen) / requiredGreen);
+        if (requiredColor.green > 0.0f)
+            greenStatus = Math.min(1.0f, 1.0f - (requiredColor.green - absorbedGreen) / requiredColor.green);
         float blueStatus = 1.0f;
-        if (requiredBlue > 0.0f)
-            blueStatus = Math.min(1.0f, (requiredBlue - absorbedBlue) / requiredBlue);
+        if (requiredColor.blue > 0.0f)
+            blueStatus = Math.min(1.0f, 1.0f - (requiredColor.blue - absorbedBlue) / requiredColor.blue);
 
         float barWidthRed = BAR_WIDTH * redStatus;
         float barWidthGreen = BAR_WIDTH * greenStatus;
