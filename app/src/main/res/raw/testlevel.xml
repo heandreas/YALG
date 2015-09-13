@@ -5,13 +5,13 @@
         <orientation x="-1" y="0"/>
         <texture file="laser"/>
         <color r="1" g="1" b="1"/>
-        <extents x = "0.08" y = "0.08"/>
+        <extents x = "0.1" y = "0.1"/>
     </gameobject>
 
     <gameobject type="receptor" id="receptor-1">
         <position x="0" y="-0.8" />
         <texture file="sensor"/>
-        <extents x = "0.08" y = "0.08"/>
+        <extents x = "0.1" y = "0.1"/>
         <requiredColor r="0.4" g="0.4" b="0.4"/>
 
         <mesh normalizer = "128">
