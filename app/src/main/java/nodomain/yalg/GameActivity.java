@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.MotionEventCompat;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -35,6 +36,8 @@ public class GameActivity extends Activity {
 
     int activePrimaryPointerID = -1;
     int activeSecondaryPointerID = -1;
+
+    private Handler handler = new Handler();
 
     int currLevelID = -1;
 
@@ -160,11 +163,18 @@ public class GameActivity extends Activity {
             }
         }
         if (allActive && currLevelID >= 0) {
-            Intent myIntent = new Intent(this, UWonActivity.class);
-            myIntent.putExtra("Level", currLevelID);
-            myIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            final int memorizedLevelID = currLevelID;
             currLevelID = -1;
-            startActivity(myIntent);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent myIntent = new Intent(GameActivity.this, UWonActivity.class);
+                    myIntent.putExtra("Level", memorizedLevelID);
+                    myIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    startActivity(myIntent);
+                }
+            }, 1000);
+
         }
     }
 
