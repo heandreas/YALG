@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level name = "level 1">
+
+    <!-- first laser, always on -->
+
+    <gameobject type="laser" id="laser-1">
+        <position x="-.8" y="1" />
+        <orientation x="1" y="0"/>
+        <texture file="laser"/>
+        <color r="1" g="0" b="0"/>
+        <extents x = "0.1" y = "0.1"/>
+
+        <mesh normalizer = "128">
+            <position x="120" y="8" />
+            <position x="8" y="8" />
+            <position x="8" y="120" />
+            <position x="120" y="120" />
+            <position x="16" y="63" />
+        </mesh>
+    </gameobject>
+
+    <!-- this receptor will trigger the win state finally -->
+
+    <gameobject type="receptor" id="receptor-1">
+        <position x="0.5" y=".5" />
+        <texture file="sensor"/>
+        <extents x = "0.1" y = "0.1"/>
+        <requiredColor r=".9" g="0" b="0"/>
+
+        <mesh normalizer = "128">
+            <position x="8" y="118" />
+            <position x="118" y="118" />
+            <position x="118" y="8" />
+            <position x="8" y="8" />
+        </mesh>
+    </gameobject>
+
+    <!-- the receptor for self-triggering -->
+
+    <gameobject type="receptor" id="receptor-2">
+        <position x="-.8" y="-.7" />
+        <texture file="sensor"/>
+        <extents x = "0.1" y = "0.1"/>
+        <requiredColor r=".1" g="0" b="0"/>
+
+        <mesh normalizer = "128">
+            <position x="8" y="118" />
+            <position x="118" y="118" />
+            <position x="118" y="8" />
+            <position x="8" y="8" />
+        </mesh>
+    </gameobject>
+
+    <!-- this laser will be triggered by itself when puzzle is solved -->
+
+    <gameobject type="laser" id="laser-2">
+        <position x="-.2" y="-0.7" />
+        <orientation x="1" y=".1"/>
+        <texture file="laser"/>
+        <color r="1" g="0" b="0"/>
+        <extents x = "0.1" y = "0.1"/>
+        <requiresTrigger id = "receptor-2"/>
+
+        <mesh normalizer = "128">
+            <position x="120" y="8" />
+            <position x="8" y="8" />
+            <position x="8" y="120" />
+            <position x="120" y="120" />
+            <position x="16" y="63" />
+        </mesh>
+    </gameobject>
+
+    <!-- refractor to use for total reflection -->
+
+    <gameobject type="refractor" id="prism_rect">
+        <position x="-0.5" y="0" />
+        <orientation x="1" y=".4"/>
+        <texture file="rect_prism"/>
+
+        <extents x = "0.3" y = "0.3"/>
+
+        <mesh normalizer = "256">
+            <position x="7" y="7" />
+            <position x="7" y="248" />
+            <position x="248" y="248" />
+            <position x="248" y="7" />
+        </mesh>
+
+        <refraction index="1.5" />
+    </gameobject>
+
+    <!-- just a bunch of blocks for a little wall -->
+
+    <gameobject type="refractor" id="block-1">
+        <position x="0.1" y="0" />
+        <orientation x="1" y="0"/>
+        <texture file="block"/>
+
+        <extents x = "0.1" y = "0.1"/>
+
+        <mesh normalizer = "128">
+            <position x="8" y="118" />
+            <position x="118" y="118" />
+            <position x="118" y="8" />
+            <position x="8" y="8" />
+        </mesh>
+
+        <refraction index="-1" />
+    </gameobject>
+
+    <gameobject type="refractor" id="block-2">
+        <position x="0.3" y="0" />
+        <orientation x="1" y="0"/>
+        <texture file="block"/>
+
+        <extents x = "0.1" y = "0.1"/>
+
+        <mesh normalizer = "128">
+            <position x="8" y="118" />
+            <position x="118" y="118" />
+            <position x="118" y="8" />
+            <position x="8" y="8" />
+        </mesh>
+
+        <refraction index="-1" />
+    </gameobject>
+
+    <gameobject type="refractor" id="block-3">
+        <position x="0.5" y="0" />
+        <orientation x="1" y="0"/>
+        <texture file="block"/>
+
+        <extents x = "0.1" y = "0.1"/>
+
+        <mesh normalizer = "128">
+            <position x="8" y="118" />
+            <position x="118" y="118" />
+            <position x="118" y="8" />
+            <position x="8" y="8" />
+        </mesh>
+
+        <refraction index="-1" />
+    </gameobject>
+
+    <gameobject type="refractor" id="block-4">
+        <position x="0.7" y="0" />
+        <orientation x="1" y="0"/>
+        <texture file="block"/>
+
+        <extents x = "0.1" y = "0.1"/>
+
+        <mesh normalizer = "128">
+            <position x="8" y="118" />
+            <position x="118" y="118" />
+            <position x="118" y="8" />
+            <position x="8" y="8" />
+        </mesh>
+
+        <refraction index="-1" />
+    </gameobject>
+
+    <gameobject type="refractor" id="block-5">
+        <position x="0.9" y="0" />
+        <orientation x="1" y="0"/>
+        <texture file="block"/>
+
+        <extents x = "0.1" y = "0.1"/>
+
+        <mesh normalizer = "128">
+            <position x="8" y="118" />
+            <position x="118" y="118" />
+            <position x="118" y="8" />
+            <position x="8" y="8" />
+        </mesh>
+
+        <refraction index="-1" />
+    </gameobject>
+
+    <!-- the two mirrors availiable for solving the puzzle -->
+
+    <gameobject type="refractor" id="mirror-1">
+        <position x=".5" y="1" />
+        <orientation x="-1" y="-1"/>
+        <texture file="mirror"/>
+
+        <movable/>
+
+        <extents x = "0.2" y = "0.2"/>
+
+        <mesh normalizer = "256">
+            <position x="127" y="248" />
+            <position x="127" y="8" />
+        </mesh>
+
+        <refraction index="10" />
+    </gameobject>
+
+    <gameobject type="refractor" id="mirror-2">
+        <position x="0.5" y="-.7" />
+        <orientation x="-1" y="1"/>
+        <texture file="mirror"/>
+
+        <movable/>
+
+        <extents x = "0.2" y = "0.2"/>
+
+        <mesh normalizer = "256">
+            <position x="127" y="248" />
+            <position x="127" y="8" />
+        </mesh>
+
+        <refraction index="10" />
+    </gameobject>
+
+
+</level>
