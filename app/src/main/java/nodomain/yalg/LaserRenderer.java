@@ -120,6 +120,7 @@ public class LaserRenderer {
         buffer[offset * VERTEX_FLOATS + 7] = uv.y;
     }
 
+    //line colors is expected to be half the size of line positions and lengths
     public void setLasers(List<PointF> linePositions, List<Float> lineLengths, List<ColorF> lineColors)
     {
         m_NumVertices = (linePositions.size() / 2) * 6;

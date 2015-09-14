@@ -16,13 +16,27 @@ public class LaserSource extends Physical {
         refractionIndex = -1;
     }
 
-    public void getRays(ArrayList<PointF> origins, ArrayList<PointF> dirs) {
+    public int getRays(ArrayList<PointF> origins, ArrayList<PointF> dirs, ArrayList<PointF> receptorLinks, ArrayList<ColorF> receptorLinkCol) {
+        boolean bTriggered = true;
+        //iterate receptors for this laser
         for (Receptor r : m_RequiredTriggers) {
-            if (!r.getIsActive())
-                return;
+            receptorLinks.add(this.getPosition());
+            receptorLinks.add(r.getPosition());
+
+            if (!r.getIsActive()) {
+                bTriggered = false;
+                receptorLinkCol.add(new ColorF(0.2f, 0.2f, 0.2f));
+            }
+            else
+                receptorLinkCol.add(new ColorF(0.5f, 0.5f, 0.5f));
         }
-        origins.add(m_Position);
-        dirs.add(m_Rotation);
+
+        if(bTriggered){
+            origins.add(m_Position);
+            dirs.add(m_Rotation);
+            return 1;
+        }
+        return 0;
     }
 
     void addTrigger(Receptor trigger) {

@@ -57,19 +57,17 @@ public class GameActivity extends Activity {
         ArrayList<PointF> lLaserDirs = new ArrayList<PointF>();
         ArrayList<ColorF> lLaserColors = new ArrayList<ColorF>();
 
+        ArrayList<PointF> lReceptorLinks = new ArrayList<PointF>();
+        ArrayList<ColorF> lReceptorLinkCols = new ArrayList<ColorF>();
 
         for (int i = 0; i < gameObjects.size(); i++) {
             GameObject go = gameObjects.get(i);
             int numVerticesOld = obstacleLines.size();
             go.getRefractors(obstacleLines, coefficients);
 
-            ArrayList<PointF> origins = new ArrayList<PointF>();
-            ArrayList<PointF> dirs = new ArrayList<PointF>();
+            int nRays = go.getRays(lLaserOrigins, lLaserDirs, lReceptorLinks, lReceptorLinkCols);
 
-            go.getRays(origins, dirs);
-            lLaserOrigins.addAll(origins);
-            lLaserDirs.addAll(dirs);
-            for (PointF laser : origins)
+            for (int iRay=0; iRay< nRays; iRay++)
                 lLaserColors.add(go.getColor());
 
             int numAddedSegments = (obstacleLines.size() - numVerticesOld) / 2;
@@ -143,6 +141,13 @@ public class GameActivity extends Activity {
                 }
             }
         }
+
+        //process receptor links
+        laserSegments.addAll(lReceptorLinks);
+        laserColors.addAll(lReceptorLinkCols);
+
+        for (PointF x :lReceptorLinks)
+            laserLengths.add(new Float(0));
     }
 
 
