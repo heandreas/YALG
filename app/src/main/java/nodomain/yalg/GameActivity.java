@@ -140,8 +140,11 @@ public class GameActivity extends Activity {
         laserSegments.addAll(lReceptorLinks);
         laserColors.addAll(lReceptorLinkCols);
 
-        for (PointF x :lReceptorLinks)
+        for (int iLink = 0; iLink < lReceptorLinks.size() / 2; iLink++){
             laserLengths.add(new Float(0));
+            float fDist = Vec2D.subtract(lReceptorLinks.get(iLink * 2 + 1), lReceptorLinks.get(iLink * 2) ).length();
+            laserLengths.add(new Float(fDist * 7.0f));
+        }
     }
 
 
