@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="nodomain.yalg" >
 
-    <uses-feature android:glEsVersion="0x00020000" android:required="true"></uses-feature>
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -25,6 +27,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_game"
             android:theme="@style/FullscreenTheme" >
+        </activity>
+        <activity
+            android:name=".UWonActivity"
+            android:label="@string/title_activity_uwon" >
         </activity>
     </application>
 
