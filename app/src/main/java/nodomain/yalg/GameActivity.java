@@ -36,6 +36,8 @@ public class GameActivity extends Activity {
     int activePrimaryPointerID = -1;
     int activeSecondaryPointerID = -1;
 
+    int currLevelID = -1;
+
     boolean rotationMode_Debug = false;
 
     GameObject selectedObject = null;
@@ -157,9 +159,11 @@ public class GameActivity extends Activity {
                 }
             }
         }
-        if (allActive) {
+        if (allActive && currLevelID >= 0) {
             Intent myIntent = new Intent(this, UWonActivity.class);
-            myIntent.putExtra("Level", 0);
+            myIntent.putExtra("Level", currLevelID);
+            myIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            currLevelID = -1;
             startActivity(myIntent);
         }
     }
@@ -180,9 +184,9 @@ public class GameActivity extends Activity {
             gameObjects.add(goBackground);
 
             Bundle extras = getIntent().getExtras();
-            int LevelID = extras.getInt("Level");
+            currLevelID = extras.getInt("Level");
 
-            gameObjects.addAll(LevelLoader.parse(getResources().openRawResource(LevelID)) );
+            gameObjects.addAll(LevelLoader.parse(getResources().openRawResource(YALG.m_Levels[currLevelID])) );
             System.out.println("Read " + gameObjects.size() + " objects.");
         } catch (XmlPullParserException e) {
             e.printStackTrace();

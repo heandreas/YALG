@@ -37,7 +37,8 @@ public class YALG extends Activity {
                 Intent myIntent = new Intent(YALG.this, GameActivity.class);
 
                 //this will hold the level to load
-                myIntent.putExtra("Level", m_Levels[0]);
+                myIntent.putExtra("Level", 0);
+                myIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
                 //start the actual game screen
                 YALG.this.startActivity(myIntent);
