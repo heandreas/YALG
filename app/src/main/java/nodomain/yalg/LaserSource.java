@@ -20,8 +20,12 @@ public class LaserSource extends Physical {
         boolean bTriggered = true;
         //iterate receptors for this laser
         for (Receptor r : m_RequiredTriggers) {
-            receptorLinks.add(this.getPosition());
-            receptorLinks.add(r.getPosition());
+            PointF vDir = Vec2D.normalized(Vec2D.subtract(r.getPosition(), this.getPosition()));
+            float fOffset1 = this.getExtents().length() * 0.9f;
+            float fOffset2 = r.getExtents().length() * 0.9f;
+
+            receptorLinks.add(Vec2D.subtract(r.getPosition(), Vec2D.mul(fOffset2, vDir)) );
+            receptorLinks.add(Vec2D.add(this.getPosition(), Vec2D.mul(fOffset1, vDir)) );
 
             if (!r.getIsActive()) {
                 bTriggered = false;
