@@ -129,6 +129,7 @@ public class LaserTracer {
             PointF vReflected = Vec2D.add(Vec2D.mul(-2.0f, Vec2D.mul(Vec2D.dot(vSurfaceNormal, vLaserDir), vSurfaceNormal)), vLaserDir);
 
             double fImpactAngle = Math.acos(Vec2D.dot(vSurfaceNormal, Vec2D.flip(vLaserDir)));
+
             double fRefractionAngle = 0.0f;
             float fRefracted = 0.0f;
             boolean bTotalReflection = false;
@@ -161,6 +162,10 @@ public class LaserTracer {
             }
             else
                 bTotalReflection = true;
+
+            //give the refraction angle a sign
+            if(Vec2D.dot(vLine, vLaserDir) < 0)
+                fRefractionAngle = -fRefractionAngle;
 
             //calculate direction of refraction
             double fInvertedSurfaceAngle = Math.atan2(-vSurfaceNormal.y, -vSurfaceNormal.x);

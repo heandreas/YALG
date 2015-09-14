@@ -8,21 +8,24 @@ import java.util.ArrayList;
 /**
  * Created by andreas on 11.09.2015.
  */
-public class LaserSource extends GameObject {
+public class LaserSource extends Physical {
 
     ArrayList<Receptor> m_RequiredTriggers = new ArrayList<Receptor>();
 
-    public void getRay(PointF origin, PointF dir) {
+    LaserSource(){
+        refractionIndex = -1;
+    }
+
+    public void getRays(ArrayList<PointF> origins, ArrayList<PointF> dirs) {
         for (Receptor r : m_RequiredTriggers) {
             if (!r.getIsActive())
                 return;
         }
-        origin.set(m_Position);
-        dir.set(m_Rotation);
+        origins.add(m_Position);
+        dirs.add(m_Rotation);
     }
 
     void addTrigger(Receptor trigger) {
         m_RequiredTriggers.add(trigger);
     }
-
 }

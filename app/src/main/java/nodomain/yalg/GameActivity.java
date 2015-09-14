@@ -63,13 +63,14 @@ public class GameActivity extends Activity {
             int numVerticesOld = obstacleLines.size();
             go.getRefractors(obstacleLines, coefficients);
 
-            PointF origin = new PointF();
-            PointF dir = new PointF();
+            ArrayList<PointF> origins = new ArrayList<PointF>();
+            ArrayList<PointF> dirs = new ArrayList<PointF>();
 
-            go.getRay(origin, dir);
-            lLaserOrigins.add(origin);
-            lLaserDirs.add(dir);
-            lLaserColors.add(go.getColor());
+            go.getRays(origins, dirs);
+            lLaserOrigins.addAll(origins);
+            lLaserDirs.addAll(dirs);
+            for (PointF laser : origins)
+                lLaserColors.add(go.getColor());
 
             int numAddedSegments = (obstacleLines.size() - numVerticesOld) / 2;
             for (int j = 0; j < numAddedSegments; j++)
@@ -159,7 +160,7 @@ public class GameActivity extends Activity {
 
             gameObjects.add(goBackground);
 
-            gameObjects.addAll(LevelLoader.parse(getResources().openRawResource(R.raw.testlevel)) );
+            gameObjects.addAll(LevelLoader.parse(getResources().openRawResource(R.raw.level1)) );
             System.out.println("Read " + gameObjects.size() + " objects.");
         } catch (XmlPullParserException e) {
             e.printStackTrace();

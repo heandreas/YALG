@@ -32,6 +32,7 @@ public class TextureFactory {
     private int sensorID;
     private int spiegelID;
     private int blockID;
+    private int rect_prismID;
 
     private int backgroundID;
     private int onePixelID;
@@ -44,8 +45,11 @@ public class TextureFactory {
         sensorID = loadTexture(R.raw.sensor);
         spiegelID = loadTexture(R.raw.spiegel);
         blockID = loadTexture(R.raw.block);
+        rect_prismID = loadTexture(R.raw.rect_prism);
+
         backgroundID = loadTexture(R.raw.background);
         onePixelID = loadTexture(R.raw.onepx);
+
     }
 
     public int getTextureByName(String name) throws Exception {
@@ -59,6 +63,8 @@ public class TextureFactory {
             return spiegelID;
         if (name.equals("block"))
             return blockID;
+        if (name.equals("rect_prism"))
+            return rect_prismID;
 
         if (name.equals("background"))
             return backgroundID;
