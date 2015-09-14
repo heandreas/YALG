@@ -2,19 +2,13 @@ package nodomain.yalg;
 
 import nodomain.yalg.util.SystemUiHider;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.graphics.Point;
 import android.graphics.PointF;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.MotionEventCompat;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.View;
-import android.opengl.GLSurfaceView;
 
 import org.xmlpull.v1.XmlPullParserException;
 
