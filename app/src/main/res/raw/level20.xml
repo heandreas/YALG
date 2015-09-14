@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level name = "level 1">
+
+    <!-- red laser, always on -->
+
+    <gameobject type="laser" id="laser-red">
+        <position x="-.12" y="1.2" />
+        <orientation x=".08" y="-1"/>
+        <texture file="laser"/>
+        <color r="1" g="0" b="0"/>
+        <extents x = "0.1" y = "0.1"/>
+
+        <mesh normalizer = "128">
+            <position x="120" y="8" />
+            <position x="8" y="8" />
+            <position x="8" y="120" />
+            <position x="120" y="120" />
+            <position x="16" y="63" />
+        </mesh>
+    </gameobject>
+
+    <!-- green laser, always on -->
+
+    <gameobject type="laser" id="laser-green">
+        <position x="0" y="1.0" />
+        <orientation x="0" y="-1"/>
+        <texture file="laser"/>
+        <color r="0" g="1" b="0"/>
+        <extents x = "0.1" y = "0.1"/>
+
+        <mesh normalizer = "128">
+            <position x="120" y="8" />
+            <position x="8" y="8" />
+            <position x="8" y="120" />
+            <position x="120" y="120" />
+            <position x="16" y="63" />
+        </mesh>
+    </gameobject>
+
+    <!-- blue laser, always on -->
+
+    <gameobject type="laser" id="laser-blue">
+        <position x=".12" y="1.2" />
+        <orientation x="-.08" y="-1"/>
+        <texture file="laser"/>
+        <color r="0" g="0" b="1"/>
+        <extents x = "0.1" y = "0.1"/>
+
+        <mesh normalizer = "128">
+            <position x="120" y="8" />
+            <position x="8" y="8" />
+            <position x="8" y="120" />
+            <position x="120" y="120" />
+            <position x="16" y="63" />
+        </mesh>
+    </gameobject>
+
+    <!-- this receptor will trigger the win state finally -->
+
+    <gameobject type="receptor" id="receptor-1">
+        <position x=".6" y="-.6" />
+        <texture file="sensor"/>
+        <extents x = "0.1" y = "0.1"/>
+        <requiredColor r=".5" g=".5" b=".5"/>
+
+        <mesh normalizer = "128">
+            <position x="8" y="118" />
+            <position x="118" y="118" />
+            <position x="118" y="8" />
+            <position x="8" y="8" />
+        </mesh>
+    </gameobject>
+
+
+
+    <!-- use prism like a bawz -->
+
+    <gameobject type="refractor" id="prism-1">
+        <position x="0" y="0" />
+        <orientation x="1" y="0"/>
+        <texture file="prism"/>
+
+        <movable/>
+
+        <extents x = "0.4" y = "0.4"/>
+
+        <mesh normalizer = "256">
+            <position x="9" y="232" />
+            <position x="243" y="232" />
+            <position x="126" y="30" />
+        </mesh>
+
+        <refraction index="1.5" />
+    </gameobject>
+
+
+</level>

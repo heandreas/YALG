@@ -96,7 +96,7 @@
         <orientation x="1" y="0"/>
         <texture file="block"/>
 
-        <extents x = "0.1" y = "0.1"/>
+        <extents x = "0.11" y = "0.11"/>
 
         <mesh normalizer = "128">
             <position x="8" y="118" />
@@ -113,7 +113,7 @@
         <orientation x="1" y="0"/>
         <texture file="block"/>
 
-        <extents x = "0.1" y = "0.1"/>
+        <extents x = "0.11" y = "0.11"/>
 
         <mesh normalizer = "128">
             <position x="8" y="118" />
@@ -130,7 +130,7 @@
         <orientation x="1" y="0"/>
         <texture file="block"/>
 
-        <extents x = "0.1" y = "0.1"/>
+        <extents x = "0.11" y = "0.11"/>
 
         <mesh normalizer = "128">
             <position x="8" y="118" />
@@ -147,7 +147,7 @@
         <orientation x="1" y="0"/>
         <texture file="block"/>
 
-        <extents x = "0.1" y = "0.1"/>
+        <extents x = "0.11" y = "0.11"/>
 
         <mesh normalizer = "128">
             <position x="8" y="118" />
@@ -164,7 +164,7 @@
         <orientation x="1" y="0"/>
         <texture file="block"/>
 
-        <extents x = "0.1" y = "0.1"/>
+        <extents x = "0.11" y = "0.11"/>
 
         <mesh normalizer = "128">
             <position x="8" y="118" />
