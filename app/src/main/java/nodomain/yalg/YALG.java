@@ -19,6 +19,9 @@ import android.view.View;
  * @see SystemUiHider
  */
 public class YALG extends Activity {
+
+    public static final int[] m_Levels = {R.raw.level1, R.raw.level10};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("Starting YALG.");
@@ -32,7 +35,11 @@ public class YALG extends Activity {
             public void onClick(View v) {
                 System.out.println("Starting Game.");
                 Intent myIntent = new Intent(YALG.this, GameActivity.class);
-                myIntent.putExtra("Level", 0);
+
+                //this will hold the level to load
+                myIntent.putExtra("Level", m_Levels[0]);
+
+                //start the actual game screen
                 YALG.this.startActivity(myIntent);
             }
         });

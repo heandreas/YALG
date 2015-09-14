@@ -162,7 +162,10 @@ public class GameActivity extends Activity {
 
             gameObjects.add(goBackground);
 
-            gameObjects.addAll(LevelLoader.parse(getResources().openRawResource(R.raw.level1)) );
+            Bundle extras = getIntent().getExtras();
+            int LevelID = extras.getInt("Level");
+
+            gameObjects.addAll(LevelLoader.parse(getResources().openRawResource(LevelID)) );
             System.out.println("Read " + gameObjects.size() + " objects.");
         } catch (XmlPullParserException e) {
             e.printStackTrace();
