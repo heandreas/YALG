@@ -3,6 +3,7 @@ package nodomain.yalg;
 import nodomain.yalg.util.SystemUiHider;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.v4.view.MotionEventCompat;
@@ -144,6 +145,22 @@ public class GameActivity extends Activity {
             laserLengths.add(new Float(0));
             float fDist = Vec2D.subtract(lReceptorLinks.get(iLink * 2 + 1), lReceptorLinks.get(iLink * 2) ).length();
             laserLengths.add(new Float(fDist * 7.0f));
+        }
+
+        boolean allActive = true;
+        for (int i = 0; i < gameObjects.size(); i++) {
+            GameObject go = gameObjects.get(i);
+            if (go instanceof Receptor) {
+                ((Receptor)go).updateActiveStatus();
+                if (!go.getIsActive()) {
+                    allActive = false;
+                }
+            }
+        }
+        if (allActive) {
+            Intent myIntent = new Intent(this, UWonActivity.class);
+            myIntent.putExtra("Level", 0);
+            startActivity(myIntent);
         }
     }
 
