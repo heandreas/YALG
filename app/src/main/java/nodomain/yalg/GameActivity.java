@@ -250,6 +250,9 @@ public class GameActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (currLevelID == -1) {
+            return false;   // No user input if level is already won.
+        }
         final int actionIndex = MotionEventCompat.getActionIndex(event);
         final int action = MotionEventCompat.getActionMasked(event);
 
