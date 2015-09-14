@@ -179,7 +179,7 @@
     <!-- the two mirrors availiable for solving the puzzle -->
 
     <gameobject type="refractor" id="mirror-1">
-        <position x="-0.2" y="1" />
+        <position x=".5" y="1" />
         <orientation x="-1" y="-1"/>
         <texture file="mirror"/>
 
