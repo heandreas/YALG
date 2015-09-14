@@ -10,7 +10,9 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by andreas on 10.09.2015.
@@ -63,9 +65,10 @@ public class LevelLoader {
         }
     }
 
-    static void readGameObject(XmlPullParser parser, List<GameObject> gameObjects) throws XmlPullParserException, IOException {
+    static void readGameObject(XmlPullParser parser, List<GameObject> gameObjects, Map<String, GameObject> objectMap) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, null, "gameobject");
         String type = parser.getAttributeValue(null, "type");
+        String id = parser.getAttributeValue(null, "id");
 
         GameObject obj = null;
         if (type.equals("laser")) {
@@ -80,6 +83,10 @@ public class LevelLoader {
         else {
             throw new IOException("Unknown object type!");
         }
+
+        objectMap.put(id, obj);
+
+        boolean test = objectMap.containsKey("receptor-1");
 
         gameObjects.add(obj);
 
@@ -110,13 +117,23 @@ public class LevelLoader {
             else if (name.equals("texture")) {
                 obj.setTextureName(parser.getAttributeValue(null, "file"));
                 parser.nextTag();
-            } else if (name.equals("refraction")) {
+            }
+            else if (name.equals("refraction")) {
                 ((Refractor)obj).setRefractionIndex(Float.parseFloat(parser.getAttributeValue(null, "index")));
                 parser.nextTag();
-            } else if (name.equals("movable")) {
+            }
+            else if (name.equals("movable")) {
                 obj.setIsMovable(true);
                 parser.nextTag();
-            } else {
+            }
+            else if (name.equals("requiresTrigger")) {
+                String requiredID = parser.getAttributeValue(null, "id");
+                if (objectMap.containsKey(requiredID)) {
+                    ((LaserSource)obj).addTrigger((Receptor)objectMap.get(requiredID));
+                }
+                parser.nextTag();
+            }
+            else {
                 skip(parser);
             }
         }
@@ -124,6 +141,7 @@ public class LevelLoader {
 
     static void readLevel(XmlPullParser parser, List<GameObject> gameObjects) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, null, "level");
+        Map<String, GameObject> objectMap = new HashMap<>();
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -131,7 +149,7 @@ public class LevelLoader {
             String name = parser.getName();
             // Starts by looking for the entry tag
             if (name.equals("gameobject")) {
-                readGameObject(parser, gameObjects);
+                readGameObject(parser, gameObjects, objectMap);
             } else {
                 skip(parser);
             }

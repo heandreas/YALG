@@ -17,28 +17,34 @@ public class Receptor extends Physical {
 
     ColorF requiredColor = new ColorF(1, 1, 1);
 
-    float absorbedRed = 0.0f;
-    float absorbedGreen = 0.25f;
-    float absorbedBlue = 0.0f;
+    ColorF absorbedColor = new ColorF(0, 0, 0);
 
     void resetAbsorbedCounters() {
-        absorbedRed = 0.0f;
-        absorbedGreen = 0.0f;
-        absorbedBlue = 0.0f;
+        absorbedColor.red = 0.0f;
+        absorbedColor.green = 0.0f;
+        absorbedColor.blue = 0.0f;
+    }
+    
+    void updateActiveStatus() {
+        m_IsActive = absorbedColor.red >= requiredColor.red && absorbedColor.green >= requiredColor.green && absorbedColor.blue >= requiredColor.blue;
     }
 
     void addRed(float value) {
-        absorbedRed += value;
+        absorbedColor.red += value;
+        updateActiveStatus();
     }
     void addGreen(float value) {
-        absorbedGreen += value;
+        absorbedColor.green += value;
+        updateActiveStatus();
     }
     void addBlue(float value) {
-        absorbedBlue += value;
+        absorbedColor.blue += value;
+        updateActiveStatus();
     }
 
     void setRequiredColor(ColorF value) {
         requiredColor = value;
+        updateActiveStatus();
     }
 
     Receptor() {
@@ -53,17 +59,19 @@ public class Receptor extends Physical {
     }
 
     public void render(int posHandle, int uvHandle, int laserColHandle) {
+        updateActiveStatus();
+
         PointF scale = Vec2D.mul(2.0f, m_Extents);
 
         float redStatus = 1.0f;
         if (requiredColor.red > 0.0f)
-            redStatus = Math.min(1.0f, 1.0f - (requiredColor.red - absorbedRed) / requiredColor.red);
+            redStatus = Math.min(1.0f, 1.0f - (requiredColor.red - absorbedColor.red) / requiredColor.red);
         float greenStatus = 1.0f;
         if (requiredColor.green > 0.0f)
-            greenStatus = Math.min(1.0f, 1.0f - (requiredColor.green - absorbedGreen) / requiredColor.green);
+            greenStatus = Math.min(1.0f, 1.0f - (requiredColor.green - absorbedColor.green) / requiredColor.green);
         float blueStatus = 1.0f;
         if (requiredColor.blue > 0.0f)
-            blueStatus = Math.min(1.0f, 1.0f - (requiredColor.blue - absorbedBlue) / requiredColor.blue);
+            blueStatus = Math.min(1.0f, 1.0f - (requiredColor.blue - absorbedColor.blue) / requiredColor.blue);
 
         float barWidthRed = BAR_WIDTH * redStatus;
         float barWidthGreen = BAR_WIDTH * greenStatus;

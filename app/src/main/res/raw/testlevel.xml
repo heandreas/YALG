@@ -12,7 +12,7 @@
         <position x="0" y="-0.8" />
         <texture file="sensor"/>
         <extents x = "0.1" y = "0.1"/>
-        <requiredColor r="0.4" g="0.4" b="0.4"/>
+        <requiredColor r="0.3" g="0.3" b="0.3"/>
 
         <mesh normalizer = "128">
             <position x="8" y="118" />
@@ -71,5 +71,14 @@
         </mesh>
 
         <refraction index="10" />
+    </gameobject>
+
+    <gameobject type="laser" id="laser-2">
+        <position x="0" y="-0.5" />
+        <orientation x="1" y="0"/>
+        <texture file="laser"/>
+        <color r="1" g="1" b="1"/>
+        <extents x = "0.1" y = "0.1"/>
+        <requiresTrigger id = "receptor-1"/>
     </gameobject>
 </level>
