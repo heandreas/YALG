@@ -29,6 +29,7 @@ public class UWonActivity extends AppCompatActivity {
                 if (nextLevel >= YALG.m_Levels.length)
                     nextLevel = 0;
                 myIntent.putExtra("Level", nextLevel);
+                myIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
                 //start the actual game screen
                 UWonActivity.this.startActivity(myIntent);
