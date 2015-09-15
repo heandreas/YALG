@@ -80,7 +80,7 @@ public class YalgGLSurface extends GLSurfaceView {
         GLES20.glUniform1i(textureHandle, 0);
 
         for (GameObject go : gameActivity.gameObjects) {
-            go.render(posHandle, uvHandle, laserColorHandle);
+            go.render(fDeltaTime, posHandle, uvHandle, laserColorHandle);
         }
 
         GLES20.glDisableVertexAttribArray(posHandle);

@@ -165,16 +165,17 @@ public class GameActivity extends Activity {
         if (allActive && currLevelID >= 0) {
             final int memorizedLevelID = currLevelID;
             currLevelID = -1;
-            handler.postDelayed(new Runnable() {
+
+/*            handler.postDelayed(new Runnable() {
                 @Override
-                public void run() {
+                public void run() {*/
                     Intent myIntent = new Intent(GameActivity.this, UWonActivity.class);
                     myIntent.putExtra("level", memorizedLevelID);
                     myIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(myIntent);
-                }
+/*                }
             }, 1000);
-
+*/
         }
     }
 

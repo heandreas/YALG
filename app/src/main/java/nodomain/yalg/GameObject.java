@@ -97,7 +97,7 @@ public class GameObject {
         buffer[offset * 5 + 4] = uv.y;
     }
 
-    public void render(int posHandle, int uvHandle, int laserColHandle) {
+    public void render(float fTimeDelta, int posHandle, int uvHandle, int laserColHandle) {
         if (m_VBO < 0) {
             int[] tmp = new int[1];
             GLES20.glGenBuffers(1, tmp, 0);

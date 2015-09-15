@@ -22,7 +22,7 @@ import android.view.View;
  */
 public class YALG extends Activity {
 
-    public static final int[] m_Levels = {R.raw.testlevel, R.raw.level1, R.raw.level20, R.raw.level10};
+    public static final int[] m_Levels = {R.raw.level1, R.raw.level20, R.raw.level10};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

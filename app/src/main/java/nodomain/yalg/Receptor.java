@@ -15,9 +15,14 @@ public class Receptor extends Physical {
     static final float BAR_X = 24.0f / 128.0f;
     static final float BAR_Y = 22.0f / 128.0f;
 
+    //inverse time constant
+    static final float fAlpha = .5f;
+
     ColorF requiredColor = new ColorF(1, 1, 1);
 
     ColorF absorbedColor = new ColorF(0, 0, 0);
+
+    ColorF lastAccumulatedColor = new ColorF(0, 0, 0);
 
     void resetAbsorbedCounters() {
         absorbedColor.red = 0.0f;
@@ -26,20 +31,17 @@ public class Receptor extends Physical {
     }
     
     void updateActiveStatus() {
-        m_IsActive = absorbedColor.red >= requiredColor.red && absorbedColor.green >= requiredColor.green && absorbedColor.blue >= requiredColor.blue;
+        m_IsActive = lastAccumulatedColor.red >= requiredColor.red && lastAccumulatedColor.green >= requiredColor.green && lastAccumulatedColor.blue >= requiredColor.blue;
     }
 
     void addRed(float value) {
         absorbedColor.red += value;
-        updateActiveStatus();
     }
     void addGreen(float value) {
         absorbedColor.green += value;
-        updateActiveStatus();
     }
     void addBlue(float value) {
         absorbedColor.blue += value;
-        updateActiveStatus();
     }
 
     void setRequiredColor(ColorF value) {
@@ -58,20 +60,24 @@ public class Receptor extends Physical {
         statusBarBlue.setColor(new ColorF(0, 0, 1));
     }
 
-    public void render(int posHandle, int uvHandle, int laserColHandle) {
+    public void render(float fDeltaTime, int posHandle, int uvHandle, int laserColHandle) {
+        lastAccumulatedColor.setRed((1.0f - fAlpha * fDeltaTime) * lastAccumulatedColor.getRed() + fAlpha * fDeltaTime * absorbedColor.getRed());
+        lastAccumulatedColor.setGreen((1.0f - fAlpha * fDeltaTime) * lastAccumulatedColor.getGreen() + fAlpha * fDeltaTime * absorbedColor.getGreen());
+        lastAccumulatedColor.setBlue((1.0f - fAlpha * fDeltaTime) * lastAccumulatedColor.getBlue() + fAlpha * fDeltaTime * absorbedColor.getBlue());
+
         updateActiveStatus();
 
         PointF scale = Vec2D.mul(2.0f, m_Extents);
 
         float redStatus = 1.0f;
         if (requiredColor.red > 0.0f)
-            redStatus = Math.min(1.0f, 1.0f - (requiredColor.red - absorbedColor.red) / requiredColor.red);
+            redStatus = Math.min(1.0f, 1.0f - (requiredColor.red - lastAccumulatedColor.red) / requiredColor.red);
         float greenStatus = 1.0f;
         if (requiredColor.green > 0.0f)
-            greenStatus = Math.min(1.0f, 1.0f - (requiredColor.green - absorbedColor.green) / requiredColor.green);
+            greenStatus = Math.min(1.0f, 1.0f - (requiredColor.green - lastAccumulatedColor.green) / requiredColor.green);
         float blueStatus = 1.0f;
         if (requiredColor.blue > 0.0f)
-            blueStatus = Math.min(1.0f, 1.0f - (requiredColor.blue - absorbedColor.blue) / requiredColor.blue);
+            blueStatus = Math.min(1.0f, 1.0f - (requiredColor.blue - lastAccumulatedColor.blue) / requiredColor.blue);
 
         float barWidthRed = BAR_WIDTH * redStatus;
         float barWidthGreen = BAR_WIDTH * greenStatus;
@@ -101,10 +107,10 @@ public class Receptor extends Physical {
         yPos += scale.y * BAR_HEIGHT;
         statusBarBlue.setPosition(xBlue, yPos);
 
-        statusBarRed.render(posHandle, uvHandle, laserColHandle);
-        statusBarGreen.render(posHandle, uvHandle, laserColHandle);
-        statusBarBlue.render(posHandle, uvHandle, laserColHandle);
+        statusBarRed.render(fDeltaTime, posHandle, uvHandle, laserColHandle);
+        statusBarGreen.render(fDeltaTime, posHandle, uvHandle, laserColHandle);
+        statusBarBlue.render(fDeltaTime, posHandle, uvHandle, laserColHandle);
 
-        super.render(posHandle, uvHandle, laserColHandle);
+        super.render(fDeltaTime, posHandle, uvHandle, laserColHandle);
     }
 }
