@@ -13,7 +13,8 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="You are AWESOME!"
             android:id="@+id/textView"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:background="#80000000"/>
 
         <Button android:id="@+id/next_level_button" style="?metaButtonBarButtonStyle"
             android:layout_height="wrap_content"
@@ -22,7 +23,6 @@
             android:layout_gravity="center_horizontal"
             android:text="@string/next_level_button"
             android:background="@drawable/button"/>
-
     </LinearLayout>
 
 </FrameLayout>
