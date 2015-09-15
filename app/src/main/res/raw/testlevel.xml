@@ -9,10 +9,10 @@
     </gameobject>
 
     <gameobject type="receptor" id="receptor-1">
-        <position x="0" y="-0.8" />
+        <position x="1" y="-0.8" />
         <texture file="sensor"/>
         <extents x = "0.1" y = "0.1"/>
-        <requiredColor r="0.3" g="0.3" b="0.3"/>
+        <requiredColor r="3" g="3" b="3"/>
 
         <mesh normalizer = "128">
             <position x="8" y="118" />
@@ -24,7 +24,7 @@
 
     <gameobject type="refractor" id="prism-1">
         <position x="-0.3" y="-0.1" />
-        <orientation x="1" y="0"/>
+        <orientation x="1" y="0.25"/>
         <texture file="prism"/>
         <movable/>
 
@@ -37,48 +37,5 @@
         </mesh>
 
         <refraction index="1.5" />
-    </gameobject>
-
-    <gameobject type="refractor" id="block-1">
-        <position x="0.3" y=".8" />
-        <orientation x="1" y="0"/>
-        <texture file="block"/>
-
-        <extents x = "0.2" y = "0.2"/>
-
-        <mesh normalizer = "128">
-            <position x="8" y="118" />
-            <position x="118" y="118" />
-            <position x="118" y="8" />
-            <position x="8" y="8" />
-        </mesh>
-
-        <refraction index="-1" />
-    </gameobject>
-
-    <gameobject type="refractor" id="mirror-1">
-        <position x="-0.3" y=".8" />
-        <orientation x="1" y="0"/>
-        <texture file="mirror"/>
-
-        <movable/>
-
-        <extents x = "0.4" y = "0.4"/>
-
-        <mesh normalizer = "256">
-            <position x="127" y="248" />
-            <position x="127" y="8" />
-        </mesh>
-
-        <refraction index="10" />
-    </gameobject>
-
-    <gameobject type="laser" id="laser-2">
-        <position x="0" y="-0.5" />
-        <orientation x="1" y="0"/>
-        <texture file="laser"/>
-        <color r="1" g="1" b="1"/>
-        <extents x = "0.1" y = "0.1"/>
-        <requiresTrigger id = "receptor-1"/>
     </gameobject>
 </level>
