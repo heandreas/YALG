@@ -31,16 +31,16 @@ public class YALG extends Activity {
 
         setContentView(R.layout.activity_yalg);
 
-        //this will hold the level to load
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.level_file_key), Context.MODE_PRIVATE) ;
-        final int iLevel = sharedPref.getInt("level", 0);
-
         final Button resumeGameButton = (Button)findViewById(R.id.resume_game_button);
         resumeGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 System.out.println("Starting Game.");
                 Intent myIntent = new Intent(YALG.this, GameActivity.class);
+
+                //this will hold the level to load
+                SharedPreferences sharedPref = getSharedPreferences(getString(R.string.level_file_key), Context.MODE_PRIVATE) ;
+                int iLevel = sharedPref.getInt("level", 0);
 
                 myIntent.putExtra("level", iLevel);
                 myIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
