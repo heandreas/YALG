@@ -1,9 +1,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="@drawable/background" tools:context=".YALG">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".UWonActivity">
 
-    <LinearLayout android:id="@+id/fullscreen_content_controls" style="?metaButtonBarStyle"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
+    <LinearLayout android:id="@+id/won_layout"
+        style="?metaButtonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical">
 
@@ -11,17 +16,19 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#FFFFFF"
             android:text="You are AWESOME!"
             android:id="@+id/textView"
-            android:layout_gravity="center_horizontal"
-            android:background="#80000000"/>
+            android:layout_gravity="center_horizontal"/>
 
-        <Button android:id="@+id/next_level_button" style="?metaButtonBarButtonStyle"
-            android:layout_height="wrap_content"
+        <Button android:id="@+id/next_level_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_height="50dp"
             android:layout_width="match_parent"
-            android:layout_weight="1"
             android:layout_gravity="center_horizontal"
-            android:text="@string/next_level_button"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#FFFFFF"
+            android:text="Next level"
             android:background="@drawable/button"/>
     </LinearLayout>
 
