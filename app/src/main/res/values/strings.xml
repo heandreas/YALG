@@ -1,11 +1,16 @@
 <resources>
-    <string name="app_name">YALG</string>
+    <string name="app_name">Yet another laser game</string>
     <string name="new_game_button">New Game</string>
     <string name="resume_game_button">Resume Game</string>
     <string name="next_level_button">Next level</string>
 
     <string name="title_activity_game">GameActivity</string>
-    <string name="title_activity_uwon">UWonActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_uwon">Level completed</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
     <string name="level_file_key">nodomain.YALG.level</string>
 </resources>

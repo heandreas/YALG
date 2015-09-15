@@ -15,7 +15,7 @@
             android:name=".YALG"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,7 +30,8 @@
         </activity>
         <activity
             android:name=".UWonActivity"
-            android:label="@string/title_activity_uwon">
+            android:label="@string/title_activity_uwon"
+            android:theme="@style/FullscreenTheme">
         </activity>
     </application>
 
