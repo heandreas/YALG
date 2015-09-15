@@ -35,14 +35,29 @@ public class YALG extends Activity {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.level_file_key), Context.MODE_PRIVATE) ;
         final int iLevel = sharedPref.getInt("level", 0);
 
-        final Button startGameButton = (Button)findViewById(R.id.start_game_button);
-        startGameButton.setOnClickListener(new View.OnClickListener() {
+        final Button resumeGameButton = (Button)findViewById(R.id.resume_game_button);
+        resumeGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 System.out.println("Starting Game.");
                 Intent myIntent = new Intent(YALG.this, GameActivity.class);
 
-                myIntent.putExtra("Level", iLevel);
+                myIntent.putExtra("level", iLevel);
+                myIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+
+                //start the actual game screen
+                YALG.this.startActivity(myIntent);
+            }
+        });
+
+        final Button newGameButton = (Button)findViewById(R.id.new_game_button);
+        newGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("Starting Game.");
+                Intent myIntent = new Intent(YALG.this, GameActivity.class);
+
+                myIntent.putExtra("level", 0);
                 myIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
                 //start the actual game screen

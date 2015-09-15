@@ -19,7 +19,7 @@ public class UWonActivity extends AppCompatActivity {
         setContentView(R.layout.activity_uwon);
 
         Bundle extras = getIntent().getExtras();
-        final int lastLevelID = extras.getInt("Level");
+        final int lastLevelID = extras.getInt("level");
 
         //calculate index of next level
         int nextLevel = lastLevelID + 1;
@@ -33,6 +33,7 @@ public class UWonActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt("level", nextLevelForSure);
         editor.commit();
+        editor.
 
         final Button startGameButton = (Button)findViewById(R.id.next_level_button);
         startGameButton.setOnClickListener(new View.OnClickListener() {
@@ -42,7 +43,7 @@ public class UWonActivity extends AppCompatActivity {
 
                 //this will hold the level to load
 
-                myIntent.putExtra("Level", nextLevelForSure);
+                myIntent.putExtra("level", nextLevelForSure);
                 myIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
                 //start the actual game screen

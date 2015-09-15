@@ -169,7 +169,7 @@ public class GameActivity extends Activity {
                 @Override
                 public void run() {
                     Intent myIntent = new Intent(GameActivity.this, UWonActivity.class);
-                    myIntent.putExtra("Level", memorizedLevelID);
+                    myIntent.putExtra("level", memorizedLevelID);
                     myIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(myIntent);
                 }
@@ -194,7 +194,7 @@ public class GameActivity extends Activity {
             gameObjects.add(goBackground);
 
             Bundle extras = getIntent().getExtras();
-            currLevelID = extras.getInt("Level");
+            currLevelID = extras.getInt("level");
 
             gameObjects.addAll(LevelLoader.parse(getResources().openRawResource(YALG.m_Levels[currLevelID])) );
             System.out.println("Read " + gameObjects.size() + " objects.");
@@ -320,7 +320,6 @@ public class GameActivity extends Activity {
                 return true;
             }
         }
-
         return false;
     }
 }
