@@ -1,16 +1,16 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="#0099cc" tools:context=".YALG">
+    android:layout_height="match_parent" android:background="@drawable/background" tools:context=".YALG">
 
     <LinearLayout android:id="@+id/fullscreen_content_controls" style="?metaButtonBarStyle"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@color/black_overlay" android:orientation="horizontal"
+        android:orientation="horizontal"
         tools:ignore="UselessParent">
 
         <Button android:id="@+id/start_game_button" style="?metaButtonBarButtonStyle"
             android:layout_width="0dp" android:layout_height="wrap_content"
-            android:layout_weight="1" android:text="@string/start_game_button" />
+            android:layout_weight="1" android:text="@string/start_game_button" android:background="@drawable/button" />
 
     </LinearLayout>
 
