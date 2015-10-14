@@ -233,9 +233,14 @@ public class GameActivity extends Activity {
     }
 
     PointF getNdcsFromMotionEvent(MotionEvent event, int pointerIndex) {
-        PointF point = new PointF();
-        point.x = MotionEventCompat.getX(event, pointerIndex);
-        point.y = MotionEventCompat.getY(event, pointerIndex);
+        PointF point = new PointF(0,0);
+
+        try {
+            point.x = MotionEventCompat.getX(event, pointerIndex);
+            point.y = MotionEventCompat.getY(event, pointerIndex);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return point;
+        }
 
         Display display = getWindowManager().getDefaultDisplay();
         point.x /= display.getWidth();
